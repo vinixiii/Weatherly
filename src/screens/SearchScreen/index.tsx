@@ -1,5 +1,6 @@
 import React from 'react';
 import { Feather } from '@expo/vector-icons';
+import { useTheme } from 'styled-components';
 
 import CitySvg from '../../assets/city.svg';
 
@@ -16,18 +17,21 @@ import {
 } from './styles';
 
 export function SearchScreen() {
+  const theme = useTheme();
+
   return(
     <Container>
       <Header>
         <InputWrapper>
           <TextInput
             placeholder="Buscar cidade"
+            placeholderTextColor={theme.colors.text}
           />
           <SearchButton>
             <Feather
               name="search"
               size={24}
-              color="#67527D"
+              color={theme.colors.main}
             />
           </SearchButton>
         </InputWrapper>
