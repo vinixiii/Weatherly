@@ -12,7 +12,7 @@ export const Header = styled.View`
   width: 100%;
   padding: 0 ${RFValue(24)}px;
   margin-top: ${getStatusBarHeight() + 36}px;
-  margin-bottom: ${RFValue(36)}px;
+  margin-bottom: ${RFValue(24)}px;
 `;
 
 export const InputWrapper = styled.View`
@@ -38,10 +38,10 @@ export const SearchButton = styled(RectButton)`
 
 export const Content = styled.View`
   flex: 1;
+  padding: 0 ${RFValue(24)}px;
 `;
 
 export const InitialMessage = styled.View`
-  margin: 0 ${RFValue(24)}px;
   align-items: center;
   justify-content: center;
 `;

@@ -8,6 +8,8 @@ export default {
     text: '#7A7A80',
     textDetail: '#AEAEB3',
 
+    success: '#12a454',
+
     line: '#EBEBF0',
   },
 
