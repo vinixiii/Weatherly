@@ -122,7 +122,6 @@ export function MyCitiesScreen() {
     }
 
     fetchCitiesWeatherData();
-    console.log(myCities);
   }, []);
 
   return(

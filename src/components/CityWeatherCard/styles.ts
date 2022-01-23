@@ -21,8 +21,8 @@ export const WeatherInfo = styled.View`
 export const CityInfo = styled.View``;
 
 export const Name = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.primary500};
-  font-size: ${RFValue(16)}px;
+  font-family: ${({ theme }) => theme.fonts.primary600};
+  font-size: ${RFValue(18)}px;
   color: ${({ theme }) => theme.colors.title};
 `;
 
@@ -77,14 +77,14 @@ export const AditionalInfo = styled.View`
 `;
 
 export const MinTemperature = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.primary600};
+  font-family: ${({ theme }) => theme.fonts.primary500};
   font-size: ${RFValue(12)}px;
   color: ${({ theme }) => theme.colors.textDetail};
   margin-right: ${RFValue(12)}px;
 `;
 
 export const MaxTemperature = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.primary400};
+  font-family: ${({ theme }) => theme.fonts.primary500};
   font-size: ${RFValue(12)}px;
   color: ${({ theme }) => theme.colors.main};
 `;
