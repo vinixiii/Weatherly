@@ -10,6 +10,7 @@ import {
 } from '@expo-google-fonts/archivo';
 
 import { SearchScreen } from './src/screens/SearchScreen';
+import { MyCitiesScreen } from './src/screens/MyCitiesScreen';
 import theme from './src/global/styles/theme';
 
 export default function App() {
@@ -25,7 +26,7 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <SearchScreen />
+      <MyCitiesScreen />
     </ThemeProvider>
   );
 };
