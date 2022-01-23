@@ -1,7 +1,10 @@
 import styled from 'styled-components/native';
+import { FlatList, FlatListProps } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import { RFValue } from 'react-native-responsive-fontsize';
+
+import { CityWeatherInfoDTO } from '../../dtos/CityWeatherInfoDTO';
 
 export const Container = styled(GestureHandlerRootView)`
   flex: 1;
@@ -13,7 +16,6 @@ export const Header = styled.View`
   padding: 0 ${RFValue(24)}px;
   padding-top: ${getStatusBarHeight() + 36}px;
   padding-bottom: ${RFValue(24)}px;
-  margin-bottom: ${RFValue(24)}px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
@@ -32,8 +34,11 @@ export const Subtitle = styled.Text`
   color: ${({ theme }) => theme.colors.text};
 `;
 
-export const Content = styled.FlatList.attrs({
+export const Content = styled(
+  FlatList as new (props: FlatListProps<CityWeatherInfoDTO>) => FlatList<CityWeatherInfoDTO>
+).attrs({
   showsVerticalScrollIndicator: false,
-})`
-  padding: 0 ${RFValue(24)}px;
-`;
+  contentContainerStyle: {
+    padding: RFValue(24),
+  },
+})``;
