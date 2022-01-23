@@ -3,7 +3,7 @@ export type CityWeatherInfoDTO = {
   name: string;
   country: string;
   current: {
-    date: string;
+    date: number;
     temp: number;
     weather: {
       main: string;
@@ -15,7 +15,7 @@ export type CityWeatherInfoDTO = {
     clouds: number;
   };
   daily: {
-    date: string;
+    date: number;
     temp: {
       day: number;
       min: number;

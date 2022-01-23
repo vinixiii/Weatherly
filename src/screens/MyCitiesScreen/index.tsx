@@ -19,7 +19,7 @@ import {
 } from './styles';
 
 interface ICurrentWeather {
-  dt: string;
+  dt: number;
   temp: number;
   weather: {
     main: string;
@@ -28,11 +28,11 @@ interface ICurrentWeather {
   }[];
   humidity: number;
   wind_speed: number;
-  clouds: number;  
+  clouds: number;
 };
 
 interface IDailyWeather {
-  dt: string;
+  dt: number;
   temp: {
     day: number;
     min: number;
@@ -81,7 +81,7 @@ export function MyCitiesScreen({ navigation } : ScreenProps) {
 
           const daily = data.daily.map(item => {
             return {
-              date: item.dt,
+              date: item.dt * 1000,
               temp: {
                 day: item.temp.day,
                 min: item.temp.min,
@@ -99,7 +99,7 @@ export function MyCitiesScreen({ navigation } : ScreenProps) {
           });
 
           const current = {
-            date: data.current.dt,
+            date: data.current.dt * 1000,
             temp: data.current.temp,
             weather: {
               main: data.current.weather[0].main,

@@ -91,8 +91,8 @@ export const SideInfo = styled.View`
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  margin-top: 16px;
-  margin-right: -12px;
+  margin-top: ${RFValue(24)}px;
+  margin-right: ${RFValue(-12)}px;
 `;
 
 export const Info = styled.View`
@@ -103,7 +103,6 @@ export const Info = styled.View`
   align-items: center;
   background-color: ${({ theme }) => theme.colors.primaryBackground};
   margin-right: 12px;
-  margin-bottom: 12px;
   padding: 16px;
 `;
 
@@ -113,5 +112,7 @@ export const InfoTitle = styled.Text`
   color: ${({ theme }) => theme.colors.textDetail};
 `;
 
-export const NextDays = styled.View``;
-
+export const NextDays = styled.View`
+  padding-top: ${RFValue(24)}px;
+  padding-bottom: ${RFValue(12)}px;
+`;

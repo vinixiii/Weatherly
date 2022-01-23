@@ -1,10 +1,13 @@
 import React from 'react';
-import { useRoute } from '@react-navigation/native';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 import { BackButton } from '../../components/BackButton';
+import { WeekdayCard } from '../../components/WeekdayCard';
 
 import { ScreenProps } from '../../@types/react-navigation';
 import { CityWeatherInfoDTO } from '../../dtos/CityWeatherInfoDTO';
+import { toCapitalize } from '../../utils/toCapitalize';
 
 import HumiditySvg from '../../assets/humidity.svg';
 import WindSvg from '../../assets/wind.svg';
@@ -29,7 +32,6 @@ import {
   Info,
   InfoTitle
 } from './styles';
-import { toCapitalize } from '../../utils/toCapitalize';
 
 interface IParams {
   city: CityWeatherInfoDTO
@@ -45,11 +47,21 @@ export function CityScreen({ navigation, route } : ScreenProps) {
   const currentWindSpeed = Math.round(city.current.wind_speed * 3.6);
   const icon = city.current.weather.icon;
 
-  console.log(city);
-
+  const formattedDailyData = city.daily.slice(1).map(item => {
+    const weekday = format(new Date(item.date), 'EEEE', { locale: ptBR });
+    const capitalizeWeekday = toCapitalize(weekday);
+    const date = format(new Date(item.date), 'dd/MM/yyyy', { locale: ptBR });
+    
+    return {
+      ...item,
+      date,
+      weekday: capitalizeWeekday,
+    };
+  });
+  console.log(formattedDailyData);
   function handleGoBack() {
     navigation.goBack();
-  }
+  };
 
   return(
     <Container>
@@ -88,7 +100,16 @@ export function CityScreen({ navigation, route } : ScreenProps) {
           </Info>
         </SideInfo>
 
-        <NextDays></NextDays>
+        <NextDays>
+          {
+            formattedDailyData.map(item => (
+              <WeekdayCard
+                key={String(item.date)}
+                data={item}
+              />
+            ))
+          }
+        </NextDays>
       </Content>
     </Container>
   );
