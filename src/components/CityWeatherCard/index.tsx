@@ -2,12 +2,14 @@ import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from 'styled-components';
 
+import { CityWeatherInfoDTO } from '../../dtos/CityWeatherInfoDTO';
+
 import {
   Container,
   WeatherInfo,
   CityInfo,
   Name,
-  Country,
+  Description,
   Weather,
   Icon,
   Temperature,
@@ -16,38 +18,44 @@ import {
   DeleteButton,
   FavoriteButton,
   AditionalInfo,
-  Description,
-  MinMaxTemperature
+  MinTemperature,
+  MaxTemperature
 } from './styles';
 
 interface ICityWeatherCard {
-  name: string;
-  country: string;
+  data: CityWeatherInfoDTO
 }
 
-export function CityWeatherCard({
-  name,
-  country,
-} : ICityWeatherCard) {
+export function CityWeatherCard({ data } : ICityWeatherCard) {
   const theme = useTheme();
+  
+  const currentWeatherDesc = toCapitalize(data.current.weather.description);
+  const currentTemp = Math.round(data.current.temp);
+  const dailyMinTemp = Math.round(data.daily[0].temp.min);
+  const dailyMaxTemp = Math.round(data.daily[0].temp.max);
+  const icon = data.current.weather.icon;
+  
+  function toCapitalize(string: string){
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
 
   return(
     <Container>
       <WeatherInfo>
         <CityInfo>
-          <Name>{name}</Name>
-          <Country>{country}</Country>
+          <Name>{data.name}, {data.country}</Name>
+          <Description>{currentWeatherDesc}</Description>
         </CityInfo>
         <Weather>
-          <Icon source={{ uri: 'https://openweathermap.org/img/wn/10d@4x.png' }} />
-          <Temperature>16ºC</Temperature>
+          <Temperature>{currentTemp}ºC</Temperature>
+          <Icon source={{ uri: `https://openweathermap.org/img/wn/${icon}@4x.png` }} />
         </Weather>
       </WeatherInfo>
 
       <Actions>
         <AditionalInfo>
-          <Description>Nublado</Description>
-          <MinMaxTemperature>min. 14ºC - max. 22ºC</MinMaxTemperature>
+        <MinTemperature>min. {dailyMinTemp}ºC</MinTemperature>
+          <MaxTemperature>max. {dailyMaxTemp}ºC</MaxTemperature>
         </AditionalInfo>
 
         <Buttons>

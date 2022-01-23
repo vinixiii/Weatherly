@@ -135,11 +135,8 @@ export function MyCitiesScreen() {
       <Content
         data={myCities}
         keyExtractor={item => item.id}
-        renderItem={() => (
-          <CityWeatherCard
-            name="São Paulo"
-            country="BR"
-          />
+        renderItem={({ item }) => (
+          <CityWeatherCard data={item} />
         )}
       />
     </Container>
