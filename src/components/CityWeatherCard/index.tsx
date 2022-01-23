@@ -1,8 +1,10 @@
 import React from 'react';
+import { TouchableOpacityProps } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from 'styled-components';
 
 import { CityWeatherInfoDTO } from '../../dtos/CityWeatherInfoDTO';
+import { toCapitalize } from '../../utils/toCapitalize';
 
 import {
   Container,
@@ -22,11 +24,11 @@ import {
   MaxTemperature
 } from './styles';
 
-interface ICityWeatherCard {
+interface ICityWeatherCard extends TouchableOpacityProps {
   data: CityWeatherInfoDTO
 }
 
-export function CityWeatherCard({ data } : ICityWeatherCard) {
+export function CityWeatherCard({ data, ...rest } : ICityWeatherCard) {
   const theme = useTheme();
   
   const currentWeatherDesc = toCapitalize(data.current.weather.description);
@@ -35,12 +37,8 @@ export function CityWeatherCard({ data } : ICityWeatherCard) {
   const dailyMaxTemp = Math.round(data.daily[0].temp.max);
   const icon = data.current.weather.icon;
   
-  function toCapitalize(string: string){
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
-
   return(
-    <Container>
+    <Container {...rest}>
       <WeatherInfo>
         <CityInfo>
           <Name>{data.name}, {data.country}</Name>

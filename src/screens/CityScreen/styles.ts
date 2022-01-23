@@ -2,10 +2,11 @@ import styled from 'styled-components/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { Platform } from 'react-native';
 
 export const Container = styled(GestureHandlerRootView)`
   flex: 1;
-  background-color: ${({ theme }) => theme.colors.primaryBackground};
+  background-color: ${({ theme }) => theme.colors.secondaryBackground};
 `;
 
 export const Header = styled.View`
@@ -22,7 +23,7 @@ export const City = styled.View``;
 
 export const Title = styled.Text`
   font-family: ${({ theme }) => theme.fonts.primary600};
-  font-size: ${RFValue(18)}px;
+  font-size: ${RFValue(24)}px;
   color: ${({ theme }) => theme.colors.title};
   text-align: right;
 `;
@@ -56,12 +57,14 @@ export const WeatherDescription = styled.Text`
   font-size: ${RFValue(15)}px;
   color: ${({ theme }) => theme.colors.text};
   margin-top: ${RFValue(140)}px;
+  margin-bottom: ${Platform.OS === 'ios' ? RFValue(16) : 0}px;
 `;
 
 export const CurrentTemperature = styled.Text`
   font-family: ${({ theme }) => theme.fonts.primary600};
   font-size: ${RFValue(48)}px;
   color: ${({ theme }) => theme.colors.title};
+  margin-bottom: ${Platform.OS === 'ios' ? RFValue(16) : 0}px;
 `;
 
 export const MinMaxTemperature = styled.View`
@@ -98,7 +101,7 @@ export const Info = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.secondaryBackground};
+  background-color: ${({ theme }) => theme.colors.primaryBackground};
   margin-right: 12px;
   margin-bottom: 12px;
   padding: 16px;

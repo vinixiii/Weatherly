@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { CityWeatherCard } from '../../components/CityWeatherCard';
 
+import { ScreenProps } from '../../@types/react-navigation';
 import { CityInfoDTO } from '../../dtos/CityInfoDTO';
 import { CityWeatherInfoDTO } from '../../dtos/CityWeatherInfoDTO';
 
@@ -52,8 +53,13 @@ interface ICityWeatherResponse {
   daily: IDailyWeather[];
 };
 
-export function MyCitiesScreen() {
+export function MyCitiesScreen({ navigation } : ScreenProps) {
   const [myCities, setMyCities] = useState<CityWeatherInfoDTO[]>([]);
+
+  function handleShowCarDetails(city: CityWeatherInfoDTO) {
+    navigation.navigate('CityScreen', { city });
+    console.log('Foi');
+  };
 
   useEffect(() => {
     async function fetchCitiesWeatherData() {
@@ -135,7 +141,7 @@ export function MyCitiesScreen() {
         data={myCities}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
-          <CityWeatherCard data={item} />
+          <CityWeatherCard data={item} onPress={() => handleShowCarDetails(item)} />
         )}
       />
     </Container>

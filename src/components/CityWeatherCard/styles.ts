@@ -1,8 +1,9 @@
 import styled from 'styled-components/native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { Platform } from 'react-native';
 
 export const Container = styled.TouchableOpacity.attrs({
-  activeOpacity: 0.7,
+  activeOpacity: Number(0.7),
 })`
   width: 100%;
   background-color: ${({ theme }) => theme.colors.secondaryBackground};
@@ -30,6 +31,7 @@ export const Description = styled.Text`
   font-family: ${({ theme }) => theme.fonts.primary400};
   font-size: ${RFValue(15)}px;
   color: ${({ theme }) => theme.colors.textDetail};
+  margin-top: ${Platform.OS === 'ios' ? RFValue(8) : 0}px;
 `;
 
 export const Weather = styled.View`

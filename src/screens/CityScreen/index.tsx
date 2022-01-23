@@ -1,6 +1,10 @@
 import React from 'react';
+import { useRoute } from '@react-navigation/native';
 
 import { BackButton } from '../../components/BackButton';
+
+import { ScreenProps } from '../../@types/react-navigation';
+import { CityWeatherInfoDTO } from '../../dtos/CityWeatherInfoDTO';
 
 import HumiditySvg from '../../assets/humidity.svg';
 import WindSvg from '../../assets/wind.svg';
@@ -25,42 +29,62 @@ import {
   Info,
   InfoTitle
 } from './styles';
+import { toCapitalize } from '../../utils/toCapitalize';
 
-export function CityScreen() {
+interface IParams {
+  city: CityWeatherInfoDTO
+};
+
+export function CityScreen({ navigation, route } : ScreenProps) {
+  const { city } = route.params as IParams;
+
+  const currentWeatherDesc = toCapitalize(city.current.weather.description);
+  const currentTemp = Math.round(city.current.temp);
+  const dailyMinTemp = Math.round(city.daily[0].temp.min);
+  const dailyMaxTemp = Math.round(city.daily[0].temp.max);
+  const currentWindSpeed = Math.round(city.current.wind_speed * 3.6);
+  const icon = city.current.weather.icon;
+
+  console.log(city);
+
+  function handleGoBack() {
+    navigation.goBack();
+  }
+
   return(
     <Container>
       <Header>
-        <BackButton />
+        <BackButton onPress={handleGoBack} />
 
         <City>
-          <Title>São Paulo, BR</Title>
+          <Title>{city.name}, {city.country}</Title>
           <Subtitle>Hoje</Subtitle>
         </City>
       </Header>
 
       <Content>
         <MainInfo>
-          <Icon source={{ uri: `https://openweathermap.org/img/wn/${'10d'}@4x.png` }} />
-          <WeatherDescription>Nublado</WeatherDescription>
-          <CurrentTemperature>16ºC</CurrentTemperature>
+          <Icon source={{ uri: `https://openweathermap.org/img/wn/${icon}@4x.png` }} />
+          <WeatherDescription>{currentWeatherDesc}</WeatherDescription>
+          <CurrentTemperature>{currentTemp}ºC</CurrentTemperature>
           <MinMaxTemperature>
-            <Min>min. 11ºC</Min>
-            <Max>max. 22ºC</Max>
+            <Min>min. {dailyMinTemp}ºC</Min>
+            <Max>max. {dailyMaxTemp}ºC</Max>
           </MinMaxTemperature>
         </MainInfo>
 
         <SideInfo>
           <Info>
             <HumiditySvg width={32} height={32} />
-            <InfoTitle>87%</InfoTitle>
+            <InfoTitle>{city.current.humidity}%</InfoTitle>
           </Info>
           <Info>
             <WindSvg width={32} height={32} />
-            <InfoTitle>2.57 m/s</InfoTitle>
+            <InfoTitle>{currentWindSpeed} km/h</InfoTitle>
           </Info>
           <Info>
             <CloudSvg width={32} height={32} />
-            <InfoTitle>20%</InfoTitle>
+            <InfoTitle>{city.current.clouds}%</InfoTitle>
           </Info>
         </SideInfo>
 
