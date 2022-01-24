@@ -12,7 +12,7 @@ export function StackRoutes() {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName="MyCities"
+      initialRouteName="MyCitiesScreen"
     >
       <Screen
         name="MyCitiesScreen"

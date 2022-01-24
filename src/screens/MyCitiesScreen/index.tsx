@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -60,74 +61,76 @@ export function MyCitiesScreen({ navigation } : ScreenProps) {
     navigation.navigate('CityScreen', { city });
   };
 
-  useEffect(() => {
-    async function fetchCitiesWeatherData() {
-      const dataStorageKey = `@weatherly:cities`;
-    
-      const data = await AsyncStorage.getItem(dataStorageKey);
-      const currentData = data ? JSON.parse(data) : [];
+  useFocusEffect(useCallback(() => {
+      async function fetchCitiesWeatherData() {
+        setMyCities([]);
+        const dataStorageKey = `@weatherly:cities`;
+      
+        const data = await AsyncStorage.getItem(dataStorageKey);
+        const currentData = data ? JSON.parse(data) : [];
 
-      currentData.forEach(async (city: CityInfoDTO) => {
-        const lat = city.lat;
-        const lon = city.lon;
-        
-        try {
-          const exclude = 'hourly,minutely'
-          const BASE_URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=${exclude}&appid=${WEATHER_API_KEY}&lang=pt_br&units=metric`
+        currentData.forEach(async (city: CityInfoDTO) => {
+          const lat = city.lat;
+          const lon = city.lon;
+          
+          try {
+            const exclude = 'hourly,minutely'
+            const BASE_URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=${exclude}&appid=${WEATHER_API_KEY}&lang=pt_br&units=metric`
 
-          const response = await fetch(BASE_URL);
-          const data = await response.json() as ICityWeatherResponse;
+            const response = await fetch(BASE_URL);
+            const data = await response.json() as ICityWeatherResponse;
 
-          const daily = data.daily.map(item => {
-            return {
-              date: item.dt * 1000,
-              temp: {
-                day: item.temp.day,
-                min: item.temp.min,
-                max: item.temp.max,
-              },
-              humidity: item.humidity,
-              wind_speed: item.wind_speed,
-              clouds: item.clouds,
+            const daily = data.daily.map(item => {
+              return {
+                date: item.dt * 1000,
+                temp: {
+                  day: item.temp.day,
+                  min: item.temp.min,
+                  max: item.temp.max,
+                },
+                humidity: item.humidity,
+                wind_speed: item.wind_speed,
+                clouds: item.clouds,
+                weather: {
+                  main: item.weather[0].main,
+                  description: item.weather[0].description,
+                  icon: item.weather[0].icon,
+                },
+              };
+            });
+
+            const current = {
+              date: data.current.dt * 1000,
+              temp: data.current.temp,
               weather: {
-                main: item.weather[0].main,
-                description: item.weather[0].description,
-                icon: item.weather[0].icon,
+                main: data.current.weather[0].main,
+                description: data.current.weather[0].description,
+                icon: data.current.weather[0].icon,
               },
+              humidity: data.current.humidity,
+              wind_speed: data.current.wind_speed,
+              clouds: data.current.clouds,
             };
-          });
 
-          const current = {
-            date: data.current.dt * 1000,
-            temp: data.current.temp,
-            weather: {
-              main: data.current.weather[0].main,
-              description: data.current.weather[0].description,
-              icon: data.current.weather[0].icon,
-            },
-            humidity: data.current.humidity,
-            wind_speed: data.current.wind_speed,
-            clouds: data.current.clouds,
-          };
+            const formattedData: CityWeatherInfoDTO = {
+              id: city.id,
+              name: city.name,
+              country: city.country,
+              current,
+              daily,
+            };
 
-          const formattedData: CityWeatherInfoDTO = {
-            id: city.id,
-            name: city.name,
-            country: city.country,
-            current,
-            daily,
-          };
+            setMyCities((oldState) => [...oldState, formattedData]);
+          } catch (error: any) {
+            console.error(error);
+            Alert.alert('Oops!', 'Não foi possível listar as cidades.');
+          }
+        });
+      }
 
-          setMyCities((oldState) => [...oldState, formattedData]);
-        } catch (error: any) {
-          console.error(error);
-          Alert.alert('Oops!', 'Não foi possível listar as cidades.');
-        }
-      });
-    }
-
-    fetchCitiesWeatherData();
-  }, []);
+      fetchCitiesWeatherData();
+    }, []
+  ));
 
   return(
     <Container>

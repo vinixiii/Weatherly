@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Alert } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from 'styled-components';
 
@@ -38,7 +38,7 @@ export function SearchScreen() {
 
     try {
       if(cityName.trim()) {
-        const formattedCityName = encodeURI(cityName);
+        const formattedCityName = encodeURI(cityName.trim());
         const BASE_URL = `https://api.openweathermap.org/data/2.5/weather?q=${formattedCityName}&APPID=${WEATHER_API_KEY}`
 
         const response = await fetch(BASE_URL);
@@ -91,8 +91,8 @@ export function SearchScreen() {
       const data = await AsyncStorage.getItem(dataStorageKey);
       const transactions = data ? JSON.parse(data) : [];
 
-      const storedCities = transactions.filter((item: CityInfoDTO) => item.id === cityInfo.id);
-      
+      const storedCities = transactions.filter((item: CityInfoDTO) => item.name === cityInfo.name);
+
       if(storedCities.length > 0) {
         setCityIsAlreadyStored(true);
       } else {
@@ -103,56 +103,58 @@ export function SearchScreen() {
     };
 
     checkIfIsStoredCity();
-  }, [cityInfo, isAddingCity]);
+  }, [cityInfo, isAddingCity, isLoading]);
 
   return(
-    <Container>
-      <Header>
-        <InputWrapper>
-          <TextInput
-            placeholder="Buscar cidade"
-            placeholderTextColor={theme.colors.text}
-            onChangeText={setCityName}
-          />
-          <SearchButton
-            onPress={handleGetCityInfo}
-          >
-            <Feather
-              name="search"
-              size={24}
-              color={theme.colors.main}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{ zIndex: 1 }}>
+      <Container>
+        <Header>
+          <InputWrapper>
+            <TextInput
+              placeholder="Buscar cidade"
+              placeholderTextColor={theme.colors.text}
+              onChangeText={setCityName}
             />
-          </SearchButton>
-        </InputWrapper>
-      </Header>
-
-      {
-        isLoading
-        ? <Loading />
-        :
-        <Content>
-          {
-            cityInfo.id ? (
-              <CityCard
-                data={{
-                  name: cityInfo.name,
-                  country: cityInfo.country,
-                  addCity: handleAddNewCity,
-                  icon: cityIsAlreadyStored ? "checkmark-sharp" : "add-sharp",
-                  isAddingCity: isAddingCity,
-                  isAddButtonDisabled: cityIsAlreadyStored
-                }}
+            <SearchButton
+              onPress={handleGetCityInfo}
+            >
+              <Ionicons
+                name="search-outline"
+                size={24}
+                color={theme.colors.text}
               />
-            ) : (
-              <InitialMessage>
-                <CitySvg height={300} />
-                <MessageTitle>Busque por uma cidade!</MessageTitle>
-                <MessageSubtitle>Basta digitar o nome de uma cidade na barra de pesquisa acima e clicar em buscar</MessageSubtitle>
-              </InitialMessage>
-            )
-          }          
-        </Content>
-      }
-    </Container>
+            </SearchButton>
+          </InputWrapper>
+        </Header>
+
+        {
+          isLoading
+          ? <Loading />
+          :
+          <Content>
+            {
+              cityInfo.id ? (
+                <CityCard
+                  data={{
+                    name: cityInfo.name,
+                    country: cityInfo.country,
+                    addCity: handleAddNewCity,
+                    icon: cityIsAlreadyStored ? "checkmark-sharp" : "add-sharp",
+                    isAddingCity: isAddingCity,
+                    isAddButtonDisabled: cityIsAlreadyStored
+                  }}
+                />
+              ) : (
+                <InitialMessage>
+                  <CitySvg height={300} />
+                  <MessageTitle>Busque por uma cidade!</MessageTitle>
+                  <MessageSubtitle>Basta digitar o nome de uma cidade na barra de pesquisa acima e clicar em buscar</MessageSubtitle>
+                </InitialMessage>
+              )
+            }          
+          </Content>
+        }
+      </Container>
+    </TouchableWithoutFeedback>
   );
 };

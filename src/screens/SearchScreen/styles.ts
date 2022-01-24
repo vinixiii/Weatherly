@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { GestureHandlerRootView, RectButton } from 'react-native-gesture-handler';
+import { BorderlessButton, GestureHandlerRootView, RectButton } from 'react-native-gesture-handler';
 import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import { RFValue } from 'react-native-responsive-fontsize';
 
@@ -13,6 +13,7 @@ export const Header = styled.View`
   padding: 0 ${RFValue(24)}px;
   margin-top: ${getStatusBarHeight() + 36}px;
   margin-bottom: ${RFValue(24)}px;
+  z-index: 1;
 `;
 
 export const InputWrapper = styled.View`
@@ -29,7 +30,9 @@ export const TextInput = styled.TextInput`
   color: ${({ theme }) => theme.colors.title};
 `;
 
-export const SearchButton = styled(RectButton)`
+export const SearchButton = styled.TouchableOpacity.attrs({
+  activeOpacity: Number(0.7),
+})`
   width: ${RFValue(56)}px;
   height: ${RFValue(56)}px;
   align-items: center;
