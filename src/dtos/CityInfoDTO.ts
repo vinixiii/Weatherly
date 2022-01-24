@@ -4,4 +4,5 @@ export type CityInfoDTO = {
   country: string;
   lon: string;
   lat: string;  
+  favorite: boolean;
 };

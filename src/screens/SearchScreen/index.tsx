@@ -50,6 +50,7 @@ export function SearchScreen() {
           country: data.sys.country,
           lon: String(data.coord.lon),
           lat: String(data.coord.lat),
+          favorite: false,
         };
 
         setCityInfo(formattedData);

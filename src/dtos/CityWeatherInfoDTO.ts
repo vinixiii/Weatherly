@@ -2,6 +2,7 @@ export type CityWeatherInfoDTO = {
   id: string;
   name: string;
   country: string;
+  favorite: boolean;
   current: {
     date: number;
     temp: number;

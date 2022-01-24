@@ -57,6 +57,12 @@ interface ICityWeatherResponse {
 export function MyCitiesScreen({ navigation } : ScreenProps) {
   const [myCities, setMyCities] = useState<CityWeatherInfoDTO[]>([]);
 
+  const sortedCities = myCities.sort((a, b) => {
+    if(a.name < b.name) { return -1; }
+    if(a.name > b.name) { return 1; }
+    return 0;
+  }).sort((a: any, b: any) => b.favorite - a.favorite);
+
   function handleShowCarDetails(city: CityWeatherInfoDTO) {
     navigation.navigate('CityScreen', { city });
   };
@@ -72,7 +78,7 @@ export function MyCitiesScreen({ navigation } : ScreenProps) {
         currentData.forEach(async (city: CityInfoDTO) => {
           const lat = city.lat;
           const lon = city.lon;
-          
+
           try {
             const exclude = 'hourly,minutely'
             const BASE_URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=${exclude}&appid=${WEATHER_API_KEY}&lang=pt_br&units=metric`
@@ -118,6 +124,7 @@ export function MyCitiesScreen({ navigation } : ScreenProps) {
               country: city.country,
               current,
               daily,
+              favorite: city.favorite,
             };
 
             setMyCities((oldState) => [...oldState, formattedData]);
@@ -132,6 +139,32 @@ export function MyCitiesScreen({ navigation } : ScreenProps) {
     }, []
   ));
 
+  async function handleFavorite(name: string) {
+    try {
+      // Update myCities
+      const updatedCities = myCities.map((city) => ({ ...city }));
+      const foundCity = updatedCities.find((city) => city.name === name);
+
+      if(!foundCity) return;
+
+      foundCity.favorite = !foundCity.favorite;
+      setMyCities(updatedCities);
+
+      // Update storage
+      const dataStorageKey = `@weatherly:cities`;
+      const data = await AsyncStorage.getItem(dataStorageKey);
+      const storedData = JSON.parse(data!);
+
+      const foundStoredCity = storedData.find((city: CityInfoDTO) => city.name === name);
+      foundStoredCity.favorite = !foundStoredCity.favorite;
+
+      await AsyncStorage.setItem(dataStorageKey, JSON.stringify(storedData));
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Oops!', 'Não foi possível adicionar esta cidade aos favoritos.');
+    };
+  };
+
   return(
     <Container>
       <Header>
@@ -140,10 +173,15 @@ export function MyCitiesScreen({ navigation } : ScreenProps) {
       </Header>
 
       <Content
-        data={myCities}
+        data={sortedCities}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
-          <CityWeatherCard data={item} onPress={() => handleShowCarDetails(item)} />
+          <CityWeatherCard
+            data={item}
+            onPress={() => handleShowCarDetails(item)}
+            onDelete={() => {}}
+            onFavorite={() => handleFavorite(item.name)}
+          />
         )}
       />
     </Container>

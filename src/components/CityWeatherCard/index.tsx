@@ -25,10 +25,12 @@ import {
 } from './styles';
 
 interface ICityWeatherCard extends TouchableOpacityProps {
-  data: CityWeatherInfoDTO
+  data: CityWeatherInfoDTO;
+  onDelete: () => void;
+  onFavorite: () => void;
 }
 
-export function CityWeatherCard({ data, ...rest } : ICityWeatherCard) {
+export function CityWeatherCard({ data, onDelete, onFavorite, ...rest } : ICityWeatherCard) {
   const theme = useTheme();
   
   const currentWeatherDesc = toCapitalize(data.current.weather.description);
@@ -57,15 +59,15 @@ export function CityWeatherCard({ data, ...rest } : ICityWeatherCard) {
         </AditionalInfo>
 
         <Buttons>
-          <DeleteButton>
+          <DeleteButton onPress={onDelete}>
             <Ionicons
               name="md-trash-bin-outline" 
               size={24}
               color={theme.colors.text} />
           </DeleteButton>
-          <FavoriteButton>
+          <FavoriteButton onPress={onFavorite}>
             <Ionicons
-              name="heart-outline" 
+              name={data.favorite ? 'heart' : 'heart-outline'} 
               size={24}
               color={theme.colors.main} />
           </FavoriteButton>
