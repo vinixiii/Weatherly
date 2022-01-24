@@ -64,7 +64,6 @@ export function SearchScreen() {
 
   async function handleAddNewCity() {
     setIsAddingCity(true);
-    console.log('Oi');
 
     const dataStorageKey = `@weatherly:cities`;
 

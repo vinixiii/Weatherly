@@ -17,6 +17,9 @@ export const Header = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  background-color: ${({ theme }) => theme.colors.secondaryBackground};
+  border-bottom-width: 1px;
+  border-bottom-color: ${({ theme }) => theme.colors.line};
 `;
 
 export const City = styled.View``;
@@ -37,28 +40,19 @@ export const Subtitle = styled.Text`
 
 export const Content = styled.ScrollView`
   flex: 1;
-  padding: 0 ${RFValue(24)}px;
 `;
 
 export const MainInfo = styled.View`
+  width: 100%;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 0 ${RFValue(24)}px;
+  margin-top: ${RFValue(36)}px;
+  margin-bottom: ${RFValue(36)}px;
 `;
 
-export const Icon = styled.Image`
-  position: absolute;
-  top: 0;
-  width: ${RFValue(150)}px;
-  height: ${RFValue(150)}px;
-`;
-
-export const WeatherDescription = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.primary400};
-  font-size: ${RFValue(15)}px;
-  color: ${({ theme }) => theme.colors.text};
-  margin-top: ${RFValue(140)}px;
-  margin-bottom: ${Platform.OS === 'ios' ? RFValue(16) : 0}px;
-`;
+export const CurrentInfo = styled.View``;
 
 export const CurrentTemperature = styled.Text`
   font-family: ${({ theme }) => theme.fonts.primary600};
@@ -67,9 +61,25 @@ export const CurrentTemperature = styled.Text`
   margin-bottom: ${Platform.OS === 'ios' ? RFValue(16) : 0}px;
 `;
 
+export const WeatherDescription = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.primary400};
+  font-size: ${RFValue(15)}px;
+  color: ${({ theme }) => theme.colors.text};
+`;
+
+export const Icon = styled.Image`
+  position: absolute;
+  top: -36px;
+  right: 24px;
+  right: ${RFValue(8)}px;
+  width: ${RFValue(150)}px;
+  height: ${RFValue(150)}px;
+`;
+
 export const MinMaxTemperature = styled.View`
   flex-direction: row;
   align-items: center;
+  justify-content: center;
 `;
 
 export const Min = styled.Text`
@@ -93,6 +103,7 @@ export const SideInfo = styled.View`
   justify-content: space-between;
   margin-top: ${RFValue(24)}px;
   margin-right: ${RFValue(-12)}px;
+  padding: 0 ${RFValue(24)}px;
 `;
 
 export const Info = styled.View`
@@ -113,6 +124,7 @@ export const InfoTitle = styled.Text`
 `;
 
 export const NextDays = styled.View`
+  padding: 0 ${RFValue(24)}px;
   padding-top: ${RFValue(24)}px;
   padding-bottom: ${RFValue(12)}px;
 `;

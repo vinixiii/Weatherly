@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -21,6 +22,7 @@ import {
   Subtitle,
   Content,
   MainInfo,
+  CurrentInfo,
   Icon,
   WeatherDescription,
   CurrentTemperature,
@@ -58,7 +60,7 @@ export function CityScreen({ navigation, route } : ScreenProps) {
       weekday: capitalizeWeekday,
     };
   });
-  console.log(formattedDailyData);
+  
   function handleGoBack() {
     navigation.goBack();
   };
@@ -76,14 +78,17 @@ export function CityScreen({ navigation, route } : ScreenProps) {
 
       <Content>
         <MainInfo>
-          <Icon source={{ uri: `https://openweathermap.org/img/wn/${icon}@4x.png` }} />
-          <WeatherDescription>{currentWeatherDesc}</WeatherDescription>
-          <CurrentTemperature>{currentTemp}ºC</CurrentTemperature>
-          <MinMaxTemperature>
-            <Min>min. {dailyMinTemp}ºC</Min>
-            <Max>max. {dailyMaxTemp}ºC</Max>
-          </MinMaxTemperature>
+          <CurrentInfo>
+              <CurrentTemperature>{currentTemp}ºC</CurrentTemperature>
+              <WeatherDescription>{currentWeatherDesc}</WeatherDescription>
+          </CurrentInfo>
+          <Icon source={{ uri: `https://openweathermap.org/img/wn/${icon}@4x.png` }} />            
         </MainInfo>
+
+        <MinMaxTemperature>
+          <Min>min. {dailyMinTemp}ºC</Min>
+          <Max>max. {dailyMaxTemp}ºC</Max>
+        </MinMaxTemperature>
 
         <SideInfo>
           <Info>

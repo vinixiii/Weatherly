@@ -20,6 +20,8 @@ export const Header = styled.View`
   align-items: center;
   justify-content: space-between;
   background-color: ${({ theme }) => theme.colors.secondaryBackground};
+  border-bottom-width: 1px;
+  border-bottom-color: ${({ theme }) => theme.colors.line};
 `;
 
 export const Title = styled.Text`

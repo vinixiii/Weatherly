@@ -58,7 +58,6 @@ export function MyCitiesScreen({ navigation } : ScreenProps) {
 
   function handleShowCarDetails(city: CityWeatherInfoDTO) {
     navigation.navigate('CityScreen', { city });
-    console.log('Foi');
   };
 
   useEffect(() => {
