@@ -1,10 +1,9 @@
 <h1 align="center">
-  <img alt="Instadev" title="Pomo.up" src=".github/logos-weatherly.svg" width="220px" />
+  <img alt="Weatherly logo" title="Weatherly" src=".github/logo-weatherly.svg" width="220px" />
 </h1>
 <br>
-<br>
 <p align="center">
-  <img alt="Instadev" src=".github/weatherly.png" width="100%">
+  <img alt="Weatherly app" src=".github/weatherly.png" width="100%">
 </p>
 <br>
 
@@ -24,8 +23,8 @@ Para utilizar a aplicação em sua máquina é necessário ter os seguintes soft
 - [Expo CLI](https://docs.expo.dev/workflow/expo-cli/)
 - [Expo Go - iOS/Android](https://expo.dev/client)
 - [Yarn](https://yarnpkg.com/) (opcional)
-- [Android Studio](https://yarnpkg.com/) (opcional)
-- [Xcode](https://yarnpkg.com/) (opcional)
+- [Android Studio](https://developer.android.com/studio) (opcional)
+- [Xcode](https://developer.apple.com/xcode/) (opcional)
 
 Com os software citados acima instalados, basta seguir os seguintes passos para executar a aplicação em sua máquina:
 1. **Criar uma API Key no OpenWeather** <br>
