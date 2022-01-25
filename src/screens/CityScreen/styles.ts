@@ -107,7 +107,6 @@ export const SideInfo = styled.View`
 `;
 
 export const Info = styled.View`
-  min-width: 26%;
   height: 92px;
   flex: 1;
   justify-content: center;
