@@ -45,8 +45,10 @@ export const Content = styled.View`
 `;
 
 export const InitialMessage = styled.View`
+  flex: 1;
   align-items: center;
   justify-content: center;
+  padding: 0 ${RFValue(24)}px;
 `;
 
 export const MessageTitle = styled.Text`

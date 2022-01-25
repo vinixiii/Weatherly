@@ -4,9 +4,9 @@ export default {
     primaryBackground: '#F8F9FA',
     secondaryBackground: '#FFFFFF',
     
-    title: '#47474D',
-    text: '#7A7A80',
-    textDetail: '#AEAEB3',
+    title: '#2F2E41',
+    text: '#3F3D56',
+    textDetail: '#7A7A80',
 
     success: '#12a454',
 

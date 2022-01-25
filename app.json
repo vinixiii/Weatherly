@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "Weatherly",
+    "android": {"softwareKeyboardLayoutMode": "pan"},
     "slug": "Weatherly",
     "version": "1.0.0",
     "assetBundlePatterns": [

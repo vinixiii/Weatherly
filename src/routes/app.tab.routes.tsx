@@ -25,7 +25,6 @@ export function TabRoutes() {
           height: 75,
           backgroundColor: theme.colors.secondaryBackground,
         },
-        tabBarHideOnKeyboard: true,
       }}
       initialRouteName="MyCitiesTabScreen"
     >

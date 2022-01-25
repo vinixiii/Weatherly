@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from 'styled-components';
 
-import CitySvg from '../../assets/city.svg';
+import SearchIllustration from '../../assets/location-search.svg';
 import { CityCard } from '../../components/CityCard';
 import { Loading } from '../../components/Loading';
 
@@ -38,7 +38,7 @@ export function SearchScreen() {
 
     try {
       if(cityName.trim()) {
-        const formattedCityName = encodeURI(cityName.trim());
+        const formattedCityName = encodeURI(cityName.trim().toLowerCase());
         const BASE_URL = `https://api.openweathermap.org/data/2.5/weather?q=${formattedCityName}&APPID=${WEATHER_API_KEY}`
 
         const response = await fetch(BASE_URL);
@@ -106,15 +106,20 @@ export function SearchScreen() {
     checkIfIsStoredCity();
   }, [cityInfo, isAddingCity, isLoading]);
 
+  useEffect(() => {
+    setCityInfo({} as CityInfoDTO);
+  }, [cityName === '']);
+
   return(
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{ zIndex: 1 }}>
       <Container>
         <Header>
           <InputWrapper>
             <TextInput
-              placeholder="Buscar cidade"
-              placeholderTextColor={theme.colors.text}
+              placeholder="Nome da cidade"
+              placeholderTextColor={theme.colors.textDetail}
               onChangeText={setCityName}
+              value={cityName}
             />
             <SearchButton
               onPress={handleGetCityInfo}
@@ -132,28 +137,30 @@ export function SearchScreen() {
           isLoading
           ? <Loading />
           :
-          <Content>
+          <>
             {
               cityInfo.id ? (
-                <CityCard
-                  data={{
-                    name: cityInfo.name,
-                    country: cityInfo.country,
-                    addCity: handleAddNewCity,
-                    icon: cityIsAlreadyStored ? "checkmark-sharp" : "add-sharp",
-                    isAddingCity: isAddingCity,
-                    isAddButtonDisabled: cityIsAlreadyStored
-                  }}
-                />
+                <Content>
+                  <CityCard
+                    data={{
+                      name: cityInfo.name,
+                      country: cityInfo.country,
+                      addCity: handleAddNewCity,
+                      icon: cityIsAlreadyStored ? "checkmark-sharp" : "add-sharp",
+                      isAddingCity: isAddingCity,
+                      isAddButtonDisabled: cityIsAlreadyStored
+                    }}
+                  />
+                </Content>
               ) : (
                 <InitialMessage>
-                  <CitySvg height={300} />
-                  <MessageTitle>Busque por uma cidade!</MessageTitle>
-                  <MessageSubtitle>Basta digitar o nome de uma cidade na barra de pesquisa acima e clicar em buscar</MessageSubtitle>
+                  <SearchIllustration height={200} />
+                  <MessageTitle>Buscar cidade!</MessageTitle>
+                  <MessageSubtitle>Utilize a barra de busca para encontrar uma cidade pelo nome e adiciona-la a sua lista.</MessageSubtitle>
                 </InitialMessage>
               )
             }          
-          </Content>
+          </>
         }
       </Container>
     </TouchableWithoutFeedback>

@@ -1,9 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import CityIllustration from '../../assets/city.svg';
 import { CityWeatherCard } from '../../components/CityWeatherCard';
+import { Loading } from '../../components/Loading';
 
 import { ScreenProps } from '../../@types/react-navigation';
 import { CityInfoDTO } from '../../dtos/CityInfoDTO';
@@ -16,7 +18,10 @@ import {
   Header,
   Title,
   Subtitle,
-  Content
+  Content,
+  InitialMessage,
+  MessageTitle,
+  MessageSubtitle
 } from './styles';
 
 interface ICurrentWeather {
@@ -55,6 +60,7 @@ interface ICityWeatherResponse {
 };
 
 export function MyCitiesScreen({ navigation } : ScreenProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const [myCities, setMyCities] = useState<CityWeatherInfoDTO[]>([]);
 
   const sortedCities = myCities.sort((a, b) => {
@@ -68,71 +74,80 @@ export function MyCitiesScreen({ navigation } : ScreenProps) {
   };
 
   useFocusEffect(useCallback(() => {
+      setIsLoading(true);
+
       async function fetchCitiesWeatherData() {
         setMyCities([]);
+
         const dataStorageKey = `@weatherly:cities`;
       
         const data = await AsyncStorage.getItem(dataStorageKey);
         const currentData = data ? JSON.parse(data) : [];
 
-        currentData.forEach(async (city: CityInfoDTO) => {
-          const lat = city.lat;
-          const lon = city.lon;
-
-          try {
-            const exclude = 'hourly,minutely'
-            const BASE_URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=${exclude}&appid=${WEATHER_API_KEY}&lang=pt_br&units=metric`
-
-            const response = await fetch(BASE_URL);
-            const data = await response.json() as ICityWeatherResponse;
-
-            const daily = data.daily.map(item => {
-              return {
-                date: item.dt * 1000,
-                temp: {
-                  day: item.temp.day,
-                  min: item.temp.min,
-                  max: item.temp.max,
-                },
-                humidity: item.humidity,
-                wind_speed: item.wind_speed,
-                clouds: item.clouds,
+        if(currentData.length > 0) {
+          currentData.forEach(async (city: CityInfoDTO) => {
+            const lat = city.lat;
+            const lon = city.lon;
+  
+            try {
+              const exclude = 'hourly,minutely'
+              const BASE_URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=${exclude}&appid=${WEATHER_API_KEY}&lang=pt_br&units=metric`
+  
+              const response = await fetch(BASE_URL);
+              const data = await response.json() as ICityWeatherResponse;
+  
+              const daily = data.daily.map(item => {
+                return {
+                  date: item.dt * 1000,
+                  temp: {
+                    day: item.temp.day,
+                    min: item.temp.min,
+                    max: item.temp.max,
+                  },
+                  humidity: item.humidity,
+                  wind_speed: item.wind_speed,
+                  clouds: item.clouds,
+                  weather: {
+                    main: item.weather[0].main,
+                    description: item.weather[0].description,
+                    icon: item.weather[0].icon,
+                  },
+                };
+              });
+  
+              const current = {
+                date: data.current.dt * 1000,
+                temp: data.current.temp,
                 weather: {
-                  main: item.weather[0].main,
-                  description: item.weather[0].description,
-                  icon: item.weather[0].icon,
+                  main: data.current.weather[0].main,
+                  description: data.current.weather[0].description,
+                  icon: data.current.weather[0].icon,
                 },
+                humidity: data.current.humidity,
+                wind_speed: data.current.wind_speed,
+                clouds: data.current.clouds,
               };
-            });
-
-            const current = {
-              date: data.current.dt * 1000,
-              temp: data.current.temp,
-              weather: {
-                main: data.current.weather[0].main,
-                description: data.current.weather[0].description,
-                icon: data.current.weather[0].icon,
-              },
-              humidity: data.current.humidity,
-              wind_speed: data.current.wind_speed,
-              clouds: data.current.clouds,
-            };
-
-            const formattedData: CityWeatherInfoDTO = {
-              id: city.id,
-              name: city.name,
-              country: city.country,
-              current,
-              daily,
-              favorite: city.favorite,
-            };
-
-            setMyCities((oldState) => [...oldState, formattedData]);
-          } catch (error: any) {
-            console.error(error);
-            Alert.alert('Oops!', 'Não foi possível listar as cidades.');
-          }
-        });
+  
+              const formattedData: CityWeatherInfoDTO = {
+                id: city.id,
+                name: city.name,
+                country: city.country,
+                current,
+                daily,
+                favorite: city.favorite,
+              };
+  
+              setMyCities((oldState) => [...oldState, formattedData]);
+            } catch (error: any) {
+              console.error(error);
+              Alert.alert('Oops!', 'Não foi possível listar as cidades.');
+            } finally {
+              setIsLoading(false);
+            }
+          });
+        } else {
+          setIsLoading(false);
+        }
       }
 
       fetchCitiesWeatherData();
@@ -189,18 +204,29 @@ export function MyCitiesScreen({ navigation } : ScreenProps) {
         <Subtitle>Minhas cidades</Subtitle>
       </Header>
 
-      <Content
-        data={sortedCities}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <CityWeatherCard
-            data={item}
-            onPress={() => handleShowCarDetails(item)}
-            onDelete={() => handleDelete(item.name)}
-            onFavorite={() => handleFavorite(item.name)}
-          />
-        )}
-      />
+      {
+        isLoading
+        ? <Loading />
+        :
+        <Content
+          data={sortedCities}
+          keyExtractor={item => item.name}
+          renderItem={({ item }) => (
+            <CityWeatherCard
+              data={item}
+              onPress={() => handleShowCarDetails(item)}
+              onDelete={() => handleDelete(item.name)}
+              onFavorite={() => handleFavorite(item.name)}
+            />
+          )}
+        />
+      }
+
+      {/* <InitialMessage>
+        <CityIllustration height={200} />
+        <MessageTitle>Ainda não há cidades :(</MessageTitle>
+        <MessageSubtitle>Adcione uma nova cidade utilizando a opção de busca na barra de navegação inferior.</MessageSubtitle>
+      </InitialMessage> */}        
     </Container>
   );
 };
