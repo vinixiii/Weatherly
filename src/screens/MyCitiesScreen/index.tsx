@@ -139,6 +139,23 @@ export function MyCitiesScreen({ navigation } : ScreenProps) {
     }, []
   ));
 
+  async function handleDelete(name: string) {
+    // Delete from myCities
+    const cities = myCities.map((city) => ({ ...city }));
+    const updatedCities = cities.filter((city) => city.name !== name);
+    setMyCities(updatedCities);
+
+    // Delete from storage
+    const dataStorageKey = `@weatherly:cities`;
+    const data = await AsyncStorage.getItem(dataStorageKey);
+    const storedData = JSON.parse(data!);
+
+    const storedCitiesUpdated = storedData.filter((city: CityInfoDTO) => city.name !== name);
+
+    await AsyncStorage.setItem(dataStorageKey, JSON.stringify(storedCitiesUpdated));
+  };
+
+
   async function handleFavorite(name: string) {
     try {
       // Update myCities
@@ -179,7 +196,7 @@ export function MyCitiesScreen({ navigation } : ScreenProps) {
           <CityWeatherCard
             data={item}
             onPress={() => handleShowCarDetails(item)}
-            onDelete={() => {}}
+            onDelete={() => handleDelete(item.name)}
             onFavorite={() => handleFavorite(item.name)}
           />
         )}
