@@ -208,25 +208,31 @@ export function MyCitiesScreen({ navigation } : ScreenProps) {
         isLoading
         ? <Loading />
         :
-        <Content
-          data={sortedCities}
-          keyExtractor={item => item.name}
-          renderItem={({ item }) => (
-            <CityWeatherCard
-              data={item}
-              onPress={() => handleShowCarDetails(item)}
-              onDelete={() => handleDelete(item.name)}
-              onFavorite={() => handleFavorite(item.name)}
-            />
-          )}
-        />
+        <>
+          {
+            myCities.length > 0 ? (
+              <Content
+                data={sortedCities}
+                keyExtractor={item => item.name}
+                renderItem={({ item }) => (
+                  <CityWeatherCard
+                    data={item}
+                    onPress={() => handleShowCarDetails(item)}
+                    onDelete={() => handleDelete(item.name)}
+                    onFavorite={() => handleFavorite(item.name)}
+                  />
+                )}
+              />
+            ) : (
+              <InitialMessage>
+                <CityIllustration height={200} />
+                <MessageTitle>Ainda não há cidades :(</MessageTitle>
+                <MessageSubtitle>Adcione uma nova cidade utilizando a opção de busca na barra de navegação inferior.</MessageSubtitle>
+              </InitialMessage>
+            )
+          }
+        </>
       }
-
-      {/* <InitialMessage>
-        <CityIllustration height={200} />
-        <MessageTitle>Ainda não há cidades :(</MessageTitle>
-        <MessageSubtitle>Adcione uma nova cidade utilizando a opção de busca na barra de navegação inferior.</MessageSubtitle>
-      </InitialMessage> */}        
     </Container>
   );
 };
