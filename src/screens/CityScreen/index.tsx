@@ -1,18 +1,22 @@
 import React from 'react';
-import { View } from 'react-native';
+
+// eslint-disable-next-line import/no-duplicates
 import { format } from 'date-fns';
+// eslint-disable-next-line import/no-duplicates
 import { ptBR } from 'date-fns/locale';
 
-import { BackButton } from '../../components/BackButton';
-import { WeekdayCard } from '../../components/WeekdayCard';
+import { BackButton } from '~/components/BackButton';
+import { WeekdayCard } from '~/components/WeekdayCard';
 
-import { ScreenProps } from '../../@types/react-navigation';
-import { CityWeatherInfoDTO } from '../../dtos/CityWeatherInfoDTO';
-import { toCapitalize } from '../../utils/toCapitalize';
+import { CityWeatherInfoDTO } from '~/dtos/CityWeatherInfoDTO';
 
-import HumiditySvg from '../../assets/humidity.svg';
-import WindSvg from '../../assets/wind.svg';
-import CloudSvg from '../../assets/cloud.svg';
+import { toCapitalize } from '~/utils/toCapitalize';
+
+import CloudSvg from '~/assets/cloud.svg';
+import HumiditySvg from '~/assets/humidity.svg';
+import WindSvg from '~/assets/wind.svg';
+
+import { ScreenProps } from '~/@types/react-navigation';
 
 import {
   Container,
@@ -32,14 +36,14 @@ import {
   SideInfo,
   NextDays,
   Info,
-  InfoTitle
+  InfoTitle,
 } from './styles';
 
 interface IParams {
-  city: CityWeatherInfoDTO
-};
+  city: CityWeatherInfoDTO;
+}
 
-export function CityScreen({ navigation, route } : ScreenProps) {
+export function CityScreen({ navigation, route }: ScreenProps) {
   const { city } = route.params as IParams;
 
   const currentWeatherDesc = toCapitalize(city.current.weather.description);
@@ -47,31 +51,33 @@ export function CityScreen({ navigation, route } : ScreenProps) {
   const dailyMinTemp = Math.round(city.daily[0].temp.min);
   const dailyMaxTemp = Math.round(city.daily[0].temp.max);
   const currentWindSpeed = Math.round(city.current.wind_speed * 3.6);
-  const icon = city.current.weather.icon;
+  const { icon } = city.current.weather;
 
   const formattedDailyData = city.daily.slice(1).map(item => {
     const weekday = format(new Date(item.date), 'EEEE', { locale: ptBR });
     const capitalizeWeekday = toCapitalize(weekday);
     const date = format(new Date(item.date), 'dd/MM/yyyy', { locale: ptBR });
-    
+
     return {
       ...item,
       date,
       weekday: capitalizeWeekday,
     };
   });
-  
-  function handleGoBack() {
+
+  const handleGoBack = () => {
     navigation.goBack();
   };
 
-  return(
+  return (
     <Container>
       <Header>
         <BackButton onPress={handleGoBack} />
 
         <City>
-          <Title>{city.name}, {city.country}</Title>
+          <Title>
+            {city.name}, {city.country}
+          </Title>
           <Subtitle>Hoje</Subtitle>
         </City>
       </Header>
@@ -79,10 +85,12 @@ export function CityScreen({ navigation, route } : ScreenProps) {
       <Content>
         <MainInfo>
           <CurrentInfo>
-              <CurrentTemperature>{currentTemp}ºC</CurrentTemperature>
-              <WeatherDescription>{currentWeatherDesc}</WeatherDescription>
+            <CurrentTemperature>{currentTemp}ºC</CurrentTemperature>
+            <WeatherDescription>{currentWeatherDesc}</WeatherDescription>
           </CurrentInfo>
-          <Icon source={{ uri: `https://openweathermap.org/img/wn/${icon}@4x.png` }} />            
+          <Icon
+            source={{ uri: `https://openweathermap.org/img/wn/${icon}@4x.png` }}
+          />
         </MainInfo>
 
         <MinMaxTemperature>
@@ -106,16 +114,11 @@ export function CityScreen({ navigation, route } : ScreenProps) {
         </SideInfo>
 
         <NextDays>
-          {
-            formattedDailyData.map(item => (
-              <WeekdayCard
-                key={String(item.date)}
-                data={item}
-              />
-            ))
-          }
+          {formattedDailyData.map(item => (
+            <WeekdayCard key={String(item.date)} data={item} />
+          ))}
         </NextDays>
       </Content>
     </Container>
   );
-};
+}

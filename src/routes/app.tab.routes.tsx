@@ -1,19 +1,21 @@
 import React from 'react';
 import { Platform } from 'react-native';
+import { getBottomSpace } from 'react-native-iphone-x-helper';
+
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { getBottomSpace } from 'react-native-iphone-x-helper';
 import { useTheme } from 'styled-components';
 
+import { SearchScreen } from '~/screens/SearchScreen';
+
 import { StackRoutes } from './app.stack.routes';
-import { SearchScreen } from '../screens/SearchScreen';
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
 export function TabRoutes() {
   const theme = useTheme();
 
-  return(
+  return (
     <Navigator
       screenOptions={{
         headerShown: false,
@@ -32,20 +34,20 @@ export function TabRoutes() {
         name="MyCitiesTabScreen"
         component={StackRoutes}
         options={{
-          tabBarIcon: (({ color }) => (
+          tabBarIcon: ({ color }) => (
             <Ionicons name="list-outline" size={24} color={color} />
-          ))
+          ),
         }}
       />
       <Screen
         name="SearchScreen"
         component={SearchScreen}
         options={{
-          tabBarIcon: (({ color }) => (
+          tabBarIcon: ({ color }) => (
             <Ionicons name="search-outline" size={24} color={color} />
-          ))
+          ),
         }}
       />
     </Navigator>
   );
-};
+}

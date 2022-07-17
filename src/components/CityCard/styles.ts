@@ -1,6 +1,6 @@
-import styled from 'styled-components/native';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { TouchableOpacityProps } from 'react-native';
+
+import styled from 'styled-components/native';
 
 export const Container = styled.View`
   width: 100%;
@@ -12,7 +12,7 @@ export const Container = styled.View`
 `;
 
 export const CityInfo = styled.View`
-  padding: 0 ${RFValue(24)}px;  
+  padding: 0 ${RFValue(24)}px;
 `;
 
 export const CityName = styled.Text`
@@ -33,4 +33,3 @@ export const AddButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
 `;
-

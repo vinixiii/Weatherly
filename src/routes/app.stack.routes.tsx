@@ -1,27 +1,22 @@
 import React from 'react';
+
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { MyCitiesScreen } from '../screens/MyCitiesScreen';
-import { CityScreen } from '../screens/CityScreen';
+import { CityScreen } from '~/screens/CityScreen';
+import { MyCitiesScreen } from '~/screens/MyCitiesScreen';
 
 const { Navigator, Screen } = createStackNavigator();
 
 export function StackRoutes() {
-  return(
+  return (
     <Navigator
       screenOptions={{
         headerShown: false,
       }}
       initialRouteName="MyCitiesScreen"
     >
-      <Screen
-        name="MyCitiesScreen"
-        component={MyCitiesScreen}
-      />
-      <Screen
-        name="CityScreen"
-        component={CityScreen}
-      />
+      <Screen name="MyCitiesScreen" component={MyCitiesScreen} />
+      <Screen name="CityScreen" component={CityScreen} />
     </Navigator>
   );
-};
+}

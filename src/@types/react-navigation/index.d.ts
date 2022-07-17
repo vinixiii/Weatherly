@@ -5,4 +5,4 @@ type RootStackParamList = {
   CityScreen: { city: CityWeatherInfoDTO };
 };
 
-type ScreenProps = StackScreenProps<RootStackParamList>;
+export type ScreenProps = StackScreenProps<RootStackParamList>;
