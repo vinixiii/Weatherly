@@ -1,7 +1,8 @@
-import styled from 'styled-components/native';
-import { BorderlessButton, GestureHandlerRootView, RectButton } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import { RFValue } from 'react-native-responsive-fontsize';
+
+import styled from 'styled-components/native';
 
 export const Container = styled(GestureHandlerRootView)`
   flex: 1;

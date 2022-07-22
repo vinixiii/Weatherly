@@ -3,6 +3,6 @@ export type CityInfoDTO = {
   name: string;
   country: string;
   lon: string;
-  lat: string;  
+  lat: string;
   favorite: boolean;
 };

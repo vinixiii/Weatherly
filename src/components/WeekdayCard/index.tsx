@@ -1,9 +1,12 @@
 import React from 'react';
 import { TouchableOpacityProps } from 'react-native';
+
+// eslint-disable-next-line import/no-duplicates
 import { addDays, format } from 'date-fns';
+// eslint-disable-next-line import/no-duplicates
 import { ptBR } from 'date-fns/locale';
 
-import { toCapitalize } from '../../utils/toCapitalize';
+import { toCapitalize } from '~/utils/toCapitalize';
 
 import {
   Container,
@@ -18,7 +21,7 @@ import {
   MinMaxTemperature,
   MinTemperature,
   MaxTemperature,
-  DateText
+  DateText,
 } from './styles';
 
 interface IWeekdayCard extends TouchableOpacityProps {
@@ -26,41 +29,47 @@ interface IWeekdayCard extends TouchableOpacityProps {
     date: string;
     weekday: string;
     temp: {
-        day: number;
-        min: number;
-        max: number;
+      day: number;
+      min: number;
+      max: number;
     };
     weather: {
-        main: string;
-        description: string;
-        icon: string;
+      main: string;
+      description: string;
+      icon: string;
     };
     humidity: number;
     wind_speed: number;
     clouds: number;
-  }
+  };
 }
 
-export function WeekdayCard({ data, ...rest } : IWeekdayCard) {  
+export function WeekdayCard({ data, ...rest }: IWeekdayCard) {
   const currentWeatherDesc = toCapitalize(data.weather.description);
   const currentTemp = Math.round(data.temp.day);
   const dailyMinTemp = Math.round(data.temp.min);
   const dailyMaxTemp = Math.round(data.temp.max);
-  const icon = data.weather.icon;
+  const { icon } = data.weather;
 
   const tomorrowDate = addDays(new Date(), 1);
-  const formattedTomorrowDate = format(tomorrowDate, 'dd/MM/yyyy', { locale: ptBR });
+  const formattedTomorrowDate = format(tomorrowDate, 'dd/MM/yyyy', {
+    locale: ptBR,
+  });
 
-  return(
+  return (
     <Container {...rest}>
       <WeatherInfo>
         <CityInfo>
-          <Name>{data.date === formattedTomorrowDate ? 'Amanhã' : data.weekday}</Name>
+          <Name>
+            {data.date === formattedTomorrowDate ? 'Amanhã' : data.weekday}
+          </Name>
           <Description>{currentWeatherDesc}</Description>
         </CityInfo>
         <Weather>
           <Temperature>{currentTemp}ºC</Temperature>
-          <Icon source={{ uri: `https://openweathermap.org/img/wn/${icon}@4x.png` }} />
+          <Icon
+            source={{ uri: `https://openweathermap.org/img/wn/${icon}@4x.png` }}
+          />
         </Weather>
       </WeatherInfo>
 
@@ -74,4 +83,4 @@ export function WeekdayCard({ data, ...rest } : IWeekdayCard) {
       </AditionalInfo>
     </Container>
   );
-};
+}

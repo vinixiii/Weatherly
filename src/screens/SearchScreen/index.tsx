@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
+
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from 'styled-components';
 
-import SearchIllustration from '../../assets/location-search.svg';
-import { CityCard } from '../../components/CityCard';
-import { Loading } from '../../components/Loading';
+import { CityCard } from '~/components/CityCard';
+import { Loading } from '~/components/Loading';
 
-import { CityInfoDTO } from '../../dtos/CityInfoDTO';
+import { CityInfoDTO } from '~/dtos/CityInfoDTO';
 
-const { WEATHER_API_KEY } = process.env;
+import SearchIllustration from '~/assets/location-search.svg';
 
 import {
   Container,
@@ -21,8 +21,10 @@ import {
   Content,
   InitialMessage,
   MessageTitle,
-  MessageSubtitle
+  MessageSubtitle,
 } from './styles';
+
+const { WEATHER_API_KEY } = process.env;
 
 export function SearchScreen() {
   const theme = useTheme();
@@ -33,13 +35,13 @@ export function SearchScreen() {
   const [cityName, setCityName] = useState('');
   const [cityInfo, setCityInfo] = useState<CityInfoDTO>({} as CityInfoDTO);
 
-  async function handleGetCityInfo() {
+  const handleGetCityInfo = async () => {
     setIsLoading(true);
 
     try {
-      if(cityName.trim()) {
+      if (cityName.trim()) {
         const formattedCityName = encodeURI(cityName.trim().toLowerCase());
-        const BASE_URL = `https://api.openweathermap.org/data/2.5/weather?q=${formattedCityName}&APPID=${WEATHER_API_KEY}`
+        const BASE_URL = `https://api.openweathermap.org/data/2.5/weather?q=${formattedCityName}&APPID=${WEATHER_API_KEY}`;
 
         const response = await fetch(BASE_URL);
         const data = await response.json();
@@ -54,7 +56,7 @@ export function SearchScreen() {
         };
 
         setCityInfo(formattedData);
-      };
+      }
     } catch (error: any) {
       console.error(error);
       Alert.alert('Oops!', 'Cidade não encontrada.');
@@ -72,10 +74,7 @@ export function SearchScreen() {
       const data = await AsyncStorage.getItem(dataStorageKey);
       const currentData = data ? JSON.parse(data) : [];
 
-      const cities = [
-        ...currentData,
-        cityInfo
-      ];
+      const cities = [...currentData, cityInfo];
 
       await AsyncStorage.setItem(dataStorageKey, JSON.stringify(cities));
     } catch (error) {
@@ -83,8 +82,8 @@ export function SearchScreen() {
       Alert.alert('Oops!', 'Não foi possível adicionar esta cidade.');
     } finally {
       setIsAddingCity(false);
-    };
-  };
+    }
+  }
 
   useEffect(() => {
     async function checkIfIsStoredCity() {
@@ -92,25 +91,29 @@ export function SearchScreen() {
       const data = await AsyncStorage.getItem(dataStorageKey);
       const transactions = data ? JSON.parse(data) : [];
 
-      const storedCities = transactions.filter((item: CityInfoDTO) => item.name === cityInfo.name);
+      const storedCities = transactions.filter(
+        (item: CityInfoDTO) => item.name === cityInfo.name,
+      );
 
-      if(storedCities.length > 0) {
+      if (storedCities.length > 0) {
         setCityIsAlreadyStored(true);
       } else {
         setCityIsAlreadyStored(false);
       }
 
       // await AsyncStorage.removeItem(dataStorageKey);
-    };
+    }
 
     checkIfIsStoredCity();
   }, [cityInfo, isAddingCity, isLoading]);
 
   useEffect(() => {
-    setCityInfo({} as CityInfoDTO);
-  }, [cityName === '']);
+    if (cityName === '') {
+      setCityInfo({} as CityInfoDTO);
+    }
+  }, [cityName]);
 
-  return(
+  return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{ zIndex: 1 }}>
       <Container>
         <Header>
@@ -121,9 +124,7 @@ export function SearchScreen() {
               onChangeText={setCityName}
               value={cityName}
             />
-            <SearchButton
-              onPress={handleGetCityInfo}
-            >
+            <SearchButton onPress={handleGetCityInfo}>
               <Ionicons
                 name="search-outline"
                 size={24}
@@ -133,36 +134,36 @@ export function SearchScreen() {
           </InputWrapper>
         </Header>
 
-        {
-          isLoading
-          ? <Loading />
-          :
+        {isLoading ? (
+          <Loading />
+        ) : (
           <>
-            {
-              cityInfo.id ? (
-                <Content>
-                  <CityCard
-                    data={{
-                      name: cityInfo.name,
-                      country: cityInfo.country,
-                      addCity: handleAddNewCity,
-                      icon: cityIsAlreadyStored ? "checkmark-sharp" : "add-sharp",
-                      isAddingCity: isAddingCity,
-                      isAddButtonDisabled: cityIsAlreadyStored
-                    }}
-                  />
-                </Content>
-              ) : (
-                <InitialMessage>
-                  <SearchIllustration height={200} />
-                  <MessageTitle>Buscar cidade!</MessageTitle>
-                  <MessageSubtitle>Utilize a barra de busca para encontrar uma cidade pelo nome e adiciona-la a sua lista.</MessageSubtitle>
-                </InitialMessage>
-              )
-            }          
+            {cityInfo.id ? (
+              <Content>
+                <CityCard
+                  data={{
+                    name: cityInfo.name,
+                    country: cityInfo.country,
+                    addCity: handleAddNewCity,
+                    icon: cityIsAlreadyStored ? 'checkmark-sharp' : 'add-sharp',
+                    isAddingCity,
+                    isAddButtonDisabled: cityIsAlreadyStored,
+                  }}
+                />
+              </Content>
+            ) : (
+              <InitialMessage>
+                <SearchIllustration height={200} />
+                <MessageTitle>Buscar cidade!</MessageTitle>
+                <MessageSubtitle>
+                  Utilize a barra de busca para encontrar uma cidade pelo nome e
+                  adiciona-la a sua lista.
+                </MessageSubtitle>
+              </InitialMessage>
+            )}
           </>
-        }
+        )}
       </Container>
     </TouchableWithoutFeedback>
   );
-};
+}
