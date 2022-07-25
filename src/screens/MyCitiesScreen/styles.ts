@@ -44,29 +44,30 @@ export const Content = styled(
 ).attrs({
   showsVerticalScrollIndicator: false,
   contentContainerStyle: {
+    flex: 1,
     padding: RFValue(24),
   },
 })``;
 
 export const InitialMessage = styled.View`
-  flex: 1;
+  flex-grow: 1;
   align-items: center;
   justify-content: center;
   padding: 0 ${RFValue(24)}px;
 `;
 
 export const MessageTitle = styled.Text`
-  margin-top: ${RFValue(36)}px;
+  margin-top: ${RFValue(24)}px;
   margin-bottom: ${RFValue(14)}px;
   font-family: ${({ theme }) => theme.fonts.primary600};
-  font-size: ${RFValue(24)}px;
+  font-size: ${RFValue(18)}px;
   color: ${({ theme }) => theme.colors.title};
   text-align: center;
 `;
 
 export const MessageSubtitle = styled.Text`
   font-family: ${({ theme }) => theme.fonts.primary400};
-  font-size: ${RFValue(15)}px;
+  font-size: ${RFValue(14)}px;
   color: ${({ theme }) => theme.colors.text};
   text-align: center;
 `;

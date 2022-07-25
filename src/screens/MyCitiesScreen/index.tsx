@@ -1,8 +1,13 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Alert } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from '@react-navigation/native';
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 
 import { CityWeatherCard } from '~/components/CityWeatherCard';
 import { Loading } from '~/components/Loading';
@@ -12,17 +17,17 @@ import { CityWeatherInfoDTO } from '~/dtos/CityWeatherInfoDTO';
 
 import CityIllustration from '~/assets/city.svg';
 
-import { ScreenProps } from '~/@types/react-navigation';
+import { RootStackParamList, ScreenProps } from '~/@types/react-navigation';
 
 import {
   Container,
-  Header,
-  Title,
-  Subtitle,
   Content,
+  Header,
   InitialMessage,
-  MessageTitle,
   MessageSubtitle,
+  MessageTitle,
+  Subtitle,
+  Title,
 } from './styles';
 
 const { WEATHER_API_KEY } = process.env;
@@ -62,110 +67,35 @@ interface ICityWeatherResponse {
   daily: IDailyWeather[];
 }
 
+type MyCitiesScreenRoute = RouteProp<RootStackParamList, 'MyCitiesScreen'>;
+
 export function MyCitiesScreen({ navigation }: ScreenProps) {
+  const { setParams } = useNavigation();
+  const { params } = useRoute<MyCitiesScreenRoute>();
+  const isFromCityScreen = params?.isFromCityScreen;
+
   const [isLoading, setIsLoading] = useState(false);
   const [myCities, setMyCities] = useState<CityWeatherInfoDTO[]>([]);
 
-  const sortedCities = myCities
-    .sort((a, b) => {
-      if (a.name < b.name) {
-        return -1;
-      }
-      if (a.name > b.name) {
-        return 1;
-      }
-      return 0;
-    })
-    .sort((a: any, b: any) => b.favorite - a.favorite);
-
-  function handleShowCarDetails(city: CityWeatherInfoDTO) {
-    navigation.navigate('CityScreen', { city });
-  }
-
-  useFocusEffect(
-    useCallback(() => {
-      setIsLoading(true);
-
-      async function fetchCitiesWeatherData() {
-        setMyCities([]);
-
-        const dataStorageKey = `@weatherly:cities`;
-
-        const data = await AsyncStorage.getItem(dataStorageKey);
-        const currentData = data ? JSON.parse(data) : [];
-
-        if (currentData.length > 0) {
-          currentData.forEach(async (city: CityInfoDTO) => {
-            const { lat } = city;
-            const { lon } = city;
-
-            try {
-              const exclude = 'hourly,minutely';
-              const BASE_URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=${exclude}&appid=${WEATHER_API_KEY}&lang=pt_br&units=metric`;
-
-              const response = await fetch(BASE_URL);
-              const responseData =
-                (await response.json()) as ICityWeatherResponse;
-
-              const daily = responseData.daily.map(item => {
-                return {
-                  date: item.dt * 1000,
-                  temp: {
-                    day: item.temp.day,
-                    min: item.temp.min,
-                    max: item.temp.max,
-                  },
-                  humidity: item.humidity,
-                  wind_speed: item.wind_speed,
-                  clouds: item.clouds,
-                  weather: {
-                    main: item.weather[0].main,
-                    description: item.weather[0].description,
-                    icon: item.weather[0].icon,
-                  },
-                };
-              });
-
-              const current = {
-                date: responseData.current.dt * 1000,
-                temp: responseData.current.temp,
-                weather: {
-                  main: responseData.current.weather[0].main,
-                  description: responseData.current.weather[0].description,
-                  icon: responseData.current.weather[0].icon,
-                },
-                humidity: responseData.current.humidity,
-                wind_speed: responseData.current.wind_speed,
-                clouds: responseData.current.clouds,
-              };
-
-              const formattedData: CityWeatherInfoDTO = {
-                id: city.id,
-                name: city.name,
-                country: city.country,
-                current,
-                daily,
-                favorite: city.favorite,
-              };
-
-              setMyCities(oldState => [...oldState, formattedData]);
-            } catch (error: any) {
-              console.error(error);
-              Alert.alert('Oops!', 'Não foi possível listar as cidades.');
-            } finally {
-              setIsLoading(false);
-            }
-          });
-        } else {
-          setIsLoading(false);
+  const sortedCities = useMemo(() => {
+    return myCities
+      .sort((a, b) => {
+        if (a.name < b.name) {
+          return -1;
         }
-      }
+        if (a.name > b.name) {
+          return 1;
+        }
+        return 0;
+      })
+      .sort((a: any, b: any) => b.favorite - a.favorite);
+  }, [myCities]);
 
-      fetchCitiesWeatherData();
-    }, []),
-  );
+  const handleShowCarDetails = (city: CityWeatherInfoDTO) => {
+    navigation.navigate('CityScreen', { city });
+  };
 
-  async function handleDelete(name: string) {
+  const handleDelete = async (name: string) => {
     // Delete from myCities
     const cities = myCities.map(city => ({ ...city }));
     const updatedCities = cities.filter(city => city.name !== name);
@@ -184,9 +114,9 @@ export function MyCitiesScreen({ navigation }: ScreenProps) {
       dataStorageKey,
       JSON.stringify(storedCitiesUpdated),
     );
-  }
+  };
 
-  async function handleFavorite(name: string) {
+  const handleFavorite = async (name: string) => {
     try {
       // Update myCities
       const updatedCities = myCities.map(city => ({ ...city }));
@@ -215,7 +145,98 @@ export function MyCitiesScreen({ navigation }: ScreenProps) {
         'Não foi possível adicionar esta cidade aos favoritos.',
       );
     }
-  }
+  };
+
+  const fetchCitiesWeatherData = async () => {
+    setIsLoading(true);
+
+    const dataStorageKey = `@weatherly:cities`;
+    const data = await AsyncStorage.getItem(dataStorageKey);
+    const currentData = data ? JSON.parse(data) : [];
+
+    if (currentData.length > 0) {
+      const cities: any = [];
+
+      try {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const city of currentData) {
+          const { lat } = city;
+          const { lon } = city;
+
+          const exclude = 'hourly,minutely';
+          // eslint-disable-next-line no-await-in-loop
+          const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=${exclude}&appid=${WEATHER_API_KEY}&lang=pt_br&units=metric`,
+          );
+          // eslint-disable-next-line no-await-in-loop
+          const responseData = (await response.json()) as ICityWeatherResponse;
+          const daily = responseData.daily.map(item => {
+            return {
+              date: item.dt * 1000,
+              temp: {
+                day: item.temp.day,
+                min: item.temp.min,
+                max: item.temp.max,
+              },
+              humidity: item.humidity,
+              wind_speed: item.wind_speed,
+              clouds: item.clouds,
+              weather: {
+                main: item.weather[0].main,
+                description: item.weather[0].description,
+                icon: item.weather[0].icon,
+              },
+            };
+          });
+
+          const current = {
+            date: responseData.current.dt * 1000,
+            temp: responseData.current.temp,
+            weather: {
+              main: responseData.current.weather[0].main,
+              description: responseData.current.weather[0].description,
+              icon: responseData.current.weather[0].icon,
+            },
+            humidity: responseData.current.humidity,
+            wind_speed: responseData.current.wind_speed,
+            clouds: responseData.current.clouds,
+          };
+
+          const formattedData: CityWeatherInfoDTO = {
+            id: city.id,
+            name: city.name,
+            country: city.country,
+            current,
+            daily,
+            favorite: city.favorite,
+          };
+
+          cities.push(formattedData);
+        }
+
+        setMyCities(cities);
+      } catch (error) {
+        console.error(error);
+        Alert.alert('Oops!', 'Não foi possível listar as cidades.');
+      }
+    }
+
+    setIsLoading(false);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!isFromCityScreen) {
+        fetchCitiesWeatherData();
+      }
+
+      return () => {
+        if (isFromCityScreen) {
+          setParams({ isFromCityScreen: false } as never);
+        }
+      };
+    }, [isFromCityScreen, setParams]),
+  );
 
   return (
     <Container>
@@ -227,31 +248,30 @@ export function MyCitiesScreen({ navigation }: ScreenProps) {
       {isLoading ? (
         <Loading />
       ) : (
-        <>
-          {myCities.length > 0 ? (
-            <Content
-              data={sortedCities}
-              keyExtractor={item => item.name}
-              renderItem={({ item }) => (
-                <CityWeatherCard
-                  data={item}
-                  onPress={() => handleShowCarDetails(item)}
-                  onDelete={() => handleDelete(item.name)}
-                  onFavorite={() => handleFavorite(item.name)}
-                />
-              )}
+        <Content
+          data={sortedCities}
+          keyExtractor={item => item.name}
+          renderItem={({ item }) => (
+            <CityWeatherCard
+              data={item}
+              onPress={() => handleShowCarDetails(item)}
+              onDelete={() => handleDelete(item.name)}
+              onFavorite={() => handleFavorite(item.name)}
             />
-          ) : (
+          )}
+          ListEmptyComponent={() => (
             <InitialMessage>
               <CityIllustration height={200} />
+
               <MessageTitle>Ainda não há cidades :(</MessageTitle>
+
               <MessageSubtitle>
                 Adcione uma nova cidade utilizando a opção de busca na barra de
                 navegação inferior.
               </MessageSubtitle>
             </InitialMessage>
           )}
-        </>
+        />
       )}
     </Container>
   );

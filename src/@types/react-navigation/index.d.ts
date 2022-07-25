@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 
-type RootStackParamList = {
-  MyCitiesScreen: undefined;
+export type RootStackParamList = {
+  MyCitiesScreen: { isFromCityScreen: boolean };
   CityScreen: { city: CityWeatherInfoDTO };
 };
 

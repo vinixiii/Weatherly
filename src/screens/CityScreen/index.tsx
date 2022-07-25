@@ -66,7 +66,7 @@ export function CityScreen({ navigation, route }: ScreenProps) {
   });
 
   const handleGoBack = () => {
-    navigation.goBack();
+    navigation.navigate('MyCitiesScreen', { isFromCityScreen: true });
   };
 
   return (
