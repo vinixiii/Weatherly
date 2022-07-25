@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,14 +14,14 @@ import SearchIllustration from '~/assets/location-search.svg';
 
 import {
   Container,
-  Header,
-  InputWrapper,
-  TextInput,
-  SearchButton,
   Content,
+  Header,
   InitialMessage,
-  MessageTitle,
+  InputWrapper,
   MessageSubtitle,
+  MessageTitle,
+  SearchButton,
+  TextInput,
 } from './styles';
 
 const { WEATHER_API_KEY } = process.env;
@@ -114,56 +114,58 @@ export function SearchScreen() {
   }, [cityName]);
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{ zIndex: 1 }}>
-      <Container>
-        <Header>
-          <InputWrapper>
-            <TextInput
-              placeholder="Nome da cidade"
-              placeholderTextColor={theme.colors.textDetail}
-              onChangeText={setCityName}
-              value={cityName}
-            />
-            <SearchButton onPress={handleGetCityInfo}>
-              <Ionicons
-                name="search-outline"
-                size={24}
-                color={theme.colors.text}
-              />
-            </SearchButton>
-          </InputWrapper>
-        </Header>
+    <Container>
+      <Header>
+        <InputWrapper>
+          <TextInput
+            placeholder="Nome da cidade"
+            placeholderTextColor={theme.colors.textDetail}
+            onChangeText={setCityName}
+            value={cityName}
+            onSubmitEditing={handleGetCityInfo}
+          />
 
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <>
-            {cityInfo.id ? (
-              <Content>
-                <CityCard
-                  data={{
-                    name: cityInfo.name,
-                    country: cityInfo.country,
-                    addCity: handleAddNewCity,
-                    icon: cityIsAlreadyStored ? 'checkmark-sharp' : 'add-sharp',
-                    isAddingCity,
-                    isAddButtonDisabled: cityIsAlreadyStored,
-                  }}
-                />
-              </Content>
-            ) : (
-              <InitialMessage>
-                <SearchIllustration height={200} />
-                <MessageTitle>Buscar cidade!</MessageTitle>
-                <MessageSubtitle>
-                  Utilize a barra de busca para encontrar uma cidade pelo nome e
-                  adiciona-la a sua lista.
-                </MessageSubtitle>
-              </InitialMessage>
-            )}
-          </>
-        )}
-      </Container>
-    </TouchableWithoutFeedback>
+          <SearchButton onPress={handleGetCityInfo}>
+            <Ionicons
+              name="search-outline"
+              size={24}
+              color={theme.colors.text}
+            />
+          </SearchButton>
+        </InputWrapper>
+      </Header>
+
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <>
+          {cityInfo.id ? (
+            <Content>
+              <CityCard
+                data={{
+                  name: cityInfo.name,
+                  country: cityInfo.country,
+                  addCity: handleAddNewCity,
+                  icon: cityIsAlreadyStored ? 'checkmark-sharp' : 'add-sharp',
+                  isAddingCity,
+                  isAddButtonDisabled: cityIsAlreadyStored,
+                }}
+              />
+            </Content>
+          ) : (
+            <InitialMessage>
+              <SearchIllustration height={200} />
+
+              <MessageTitle>Buscar cidade!</MessageTitle>
+
+              <MessageSubtitle>
+                Utilize a barra de busca para encontrar uma cidade pelo nome e
+                adiciona-la a sua lista.
+              </MessageSubtitle>
+            </InitialMessage>
+          )}
+        </>
+      )}
+    </Container>
   );
 }
