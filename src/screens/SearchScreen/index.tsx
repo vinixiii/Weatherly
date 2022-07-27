@@ -13,6 +13,7 @@ import { CityInfoDTO } from '~/dtos/CityInfoDTO';
 import SearchIllustration from '~/assets/location-search.svg';
 
 import {
+  ClearTextButton,
   Container,
   Content,
   Header,
@@ -125,6 +126,16 @@ export function SearchScreen() {
             onSubmitEditing={handleGetCityInfo}
           />
 
+          {!!cityName.trim() && (
+            <ClearTextButton onPress={() => setCityName('')}>
+              <Ionicons
+                name="close-outline"
+                size={18}
+                color={theme.colors.text}
+              />
+            </ClearTextButton>
+          )}
+
           <SearchButton onPress={handleGetCityInfo}>
             <Ionicons
               name="search-outline"
@@ -138,20 +149,18 @@ export function SearchScreen() {
       {isLoading ? (
         <Loading />
       ) : (
-        <>
+        <Content>
           {cityInfo.id ? (
-            <Content>
-              <CityCard
-                data={{
-                  name: cityInfo.name,
-                  country: cityInfo.country,
-                  addCity: handleAddNewCity,
-                  icon: cityIsAlreadyStored ? 'checkmark-sharp' : 'add-sharp',
-                  isAddingCity,
-                  isAddButtonDisabled: cityIsAlreadyStored,
-                }}
-              />
-            </Content>
+            <CityCard
+              data={{
+                name: cityInfo.name,
+                country: cityInfo.country,
+                addCity: handleAddNewCity,
+                icon: cityIsAlreadyStored ? 'checkmark-sharp' : 'add-sharp',
+                isAddingCity,
+                isAddButtonDisabled: cityIsAlreadyStored,
+              }}
+            />
           ) : (
             <InitialMessage>
               <SearchIllustration height={200} />
@@ -164,7 +173,7 @@ export function SearchScreen() {
               </MessageSubtitle>
             </InitialMessage>
           )}
-        </>
+        </Content>
       )}
     </Container>
   );

@@ -3,57 +3,70 @@ import { RFValue } from 'react-native-responsive-fontsize';
 
 import styled from 'styled-components/native';
 
-export const Container = styled.ScrollView.attrs({
-  showsVerticalScrollIndicator: false,
-  keyboardShouldPersistTaps: 'handled',
-  contentContainerStyle: {
-    flex: 1,
-  },
-})`
+export const Container = styled.View`
+  flex: 1;
   background-color: ${({ theme }) => theme.colors.primaryBackground};
 `;
 
 export const Header = styled.View`
   width: 100%;
   padding: 0 ${RFValue(24)}px;
-  margin-top: ${getStatusBarHeight() + 36}px;
-  margin-bottom: ${RFValue(24)}px;
-  z-index: 1;
+  padding-top: ${getStatusBarHeight() + 36}px;
+  padding-bottom: ${RFValue(24)}px;
+  background-color: ${({ theme }) => theme.colors.secondaryBackground};
+  border-bottom-width: 1px;
+  border-bottom-color: ${({ theme }) => theme.colors.line};
 `;
 
 export const InputWrapper = styled.View`
   flex-direction: row;
-  margin-bottom: ${RFValue(8)}px;
-  background-color: ${({ theme }) => theme.colors.secondaryBackground};
+  align-items: center;
+  background-color: ${({ theme }) => theme.colors.primaryBackground};
 `;
 
 export const TextInput = styled.TextInput`
   flex: 1;
-  padding: 0 ${RFValue(24)}px;
+  padding: 0 0 0 ${RFValue(24)}px;
   font-family: ${({ theme }) => theme.fonts.primary400};
-  font-size: ${RFValue(15)}px;
+  font-size: ${RFValue(14)}px;
   color: ${({ theme }) => theme.colors.title};
+`;
+
+export const ClearTextButton = styled.TouchableOpacity.attrs({
+  activeOpacity: Number(0.7),
+})`
+  width: ${RFValue(24)}px;
+  height: ${RFValue(24)}px;
+  margin-right: ${RFValue(12)}px;
+  margin-left: ${RFValue(24)}px;
+  align-items: center;
+  justify-content: center;
+  background-color: ${({ theme }) => theme.colors.secondaryBackground};
+  border-radius: ${RFValue(24)}px;
 `;
 
 export const SearchButton = styled.TouchableOpacity.attrs({
   activeOpacity: Number(0.7),
 })`
-  width: ${RFValue(56)}px;
-  height: ${RFValue(56)}px;
+  width: ${RFValue(48)}px;
+  height: ${RFValue(48)}px;
   align-items: center;
   justify-content: center;
 `;
 
-export const Content = styled.View`
-  flex: 1;
-  padding: 0 ${RFValue(24)}px;
-`;
+export const Content = styled.ScrollView.attrs({
+  showsVerticalScrollIndicator: false,
+  keyboardShouldPersistTaps: 'handled',
+  contentContainerStyle: {
+    flexGrow: 1,
+    padding: RFValue(24),
+  },
+})``;
 
 export const InitialMessage = styled.View`
   flex: 1;
   align-items: center;
   justify-content: center;
-  padding: 0 ${RFValue(24)}px;
 `;
 
 export const MessageTitle = styled.Text`
