@@ -9,21 +9,21 @@ import { CityWeatherInfoDTO } from '~/dtos/CityWeatherInfoDTO';
 import { toCapitalize } from '~/utils/toCapitalize';
 
 import {
-  Container,
-  WeatherInfo,
-  CityInfo,
-  Name,
-  Description,
-  Weather,
-  Icon,
-  Temperature,
   Actions,
-  Buttons,
-  DeleteButton,
-  FavoriteButton,
   AditionalInfo,
-  MinTemperature,
+  Buttons,
+  CityInfo,
+  Container,
+  DeleteButton,
+  Description,
+  FavoriteButton,
+  Icon,
   MaxTemperature,
+  MinTemperature,
+  Name,
+  Temperature,
+  Weather,
+  WeatherInfo,
 } from './styles';
 
 interface ICityWeatherCard extends TouchableOpacityProps {
