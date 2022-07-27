@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { BackHandler } from 'react-native';
 
 // eslint-disable-next-line import/no-duplicates
 import { format } from 'date-fns';
@@ -65,9 +66,20 @@ export function CityScreen({ navigation, route }: ScreenProps) {
     };
   });
 
-  const handleGoBack = () => {
+  const handleGoBack = useCallback(() => {
     navigation.navigate('MyCitiesScreen', { isFromCityScreen: true });
-  };
+    return true;
+  }, [navigation]);
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleGoBack);
+    navigation.addListener('gestureEnd', handleGoBack);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleGoBack);
+      navigation.removeListener('gestureEnd', handleGoBack);
+    };
+  }, [navigation, handleGoBack]);
 
   return (
     <Container>
