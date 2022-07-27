@@ -23,6 +23,7 @@ import {
   Container,
   Content,
   Header,
+  HeaderContent,
   InitialMessage,
   MessageSubtitle,
   MessageTitle,
@@ -148,8 +149,6 @@ export function MyCitiesScreen({ navigation }: ScreenProps) {
   };
 
   const fetchCitiesWeatherData = async () => {
-    setIsLoading(true);
-
     const dataStorageKey = `@weatherly:cities`;
     const data = await AsyncStorage.getItem(dataStorageKey);
     const currentData = data ? JSON.parse(data) : [];
@@ -158,6 +157,8 @@ export function MyCitiesScreen({ navigation }: ScreenProps) {
       const cities: any = [];
 
       try {
+        setIsLoading(true);
+
         // eslint-disable-next-line no-restricted-syntax
         for (const city of currentData) {
           const { lat } = city;
@@ -218,10 +219,10 @@ export function MyCitiesScreen({ navigation }: ScreenProps) {
       } catch (error) {
         console.error(error);
         Alert.alert('Oops!', 'Não foi possível listar as cidades.');
+      } finally {
+        setIsLoading(false);
       }
     }
-
-    setIsLoading(false);
   };
 
   useFocusEffect(
@@ -241,25 +242,27 @@ export function MyCitiesScreen({ navigation }: ScreenProps) {
   return (
     <Container>
       <Header>
-        <Title>Weatherly</Title>
-        <Subtitle>Minhas cidades</Subtitle>
+        <HeaderContent>
+          <Title>Weatherly</Title>
+          <Subtitle>Minhas cidades</Subtitle>
+        </HeaderContent>
       </Header>
 
       {isLoading ? (
         <Loading />
       ) : (
-        <Content
-          data={sortedCities}
-          keyExtractor={item => item.name}
-          renderItem={({ item }) => (
-            <CityWeatherCard
-              data={item}
-              onPress={() => handleShowCarDetails(item)}
-              onDelete={() => handleDelete(item.name)}
-              onFavorite={() => handleFavorite(item.name)}
-            />
-          )}
-          ListEmptyComponent={() => (
+        <Content>
+          {sortedCities.length > 0 ? (
+            sortedCities.map(item => (
+              <CityWeatherCard
+                key={item.name}
+                data={item}
+                onPress={() => handleShowCarDetails(item)}
+                onDelete={() => handleDelete(item.name)}
+                onFavorite={() => handleFavorite(item.name)}
+              />
+            ))
+          ) : (
             <InitialMessage>
               <CityIllustration height={200} />
 
@@ -271,7 +274,7 @@ export function MyCitiesScreen({ navigation }: ScreenProps) {
               </MessageSubtitle>
             </InitialMessage>
           )}
-        />
+        </Content>
       )}
     </Container>
   );

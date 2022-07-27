@@ -1,11 +1,8 @@
-import { FlatList, FlatListProps } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 import styled from 'styled-components/native';
-
-import { CityWeatherInfoDTO } from '~/dtos/CityWeatherInfoDTO';
 
 export const Container = styled(GestureHandlerRootView)`
   flex: 1;
@@ -17,12 +14,16 @@ export const Header = styled.View`
   padding: 0 ${RFValue(24)}px;
   padding-top: ${getStatusBarHeight() + 36}px;
   padding-bottom: ${RFValue(24)}px;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
   background-color: ${({ theme }) => theme.colors.secondaryBackground};
   border-bottom-width: 1px;
   border-bottom-color: ${({ theme }) => theme.colors.line};
+`;
+
+export const HeaderContent = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: ${RFValue(48)}px;
 `;
 
 export const Title = styled.Text`
@@ -37,15 +38,13 @@ export const Subtitle = styled.Text`
   color: ${({ theme }) => theme.colors.text};
 `;
 
-export const Content = styled(
-  FlatList as new (
-    props: FlatListProps<CityWeatherInfoDTO>,
-  ) => FlatList<CityWeatherInfoDTO>,
-).attrs({
+export const Content = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
   contentContainerStyle: {
-    flex: 1,
-    padding: RFValue(24),
+    flexGrow: 1,
+    paddingTop: RFValue(24),
+    paddingBottom: RFValue(8),
+    paddingHorizontal: RFValue(24),
   },
 })``;
 
