@@ -3,15 +3,16 @@ import { Alert } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AnimatePresence, MotiView, useAnimationState } from 'moti';
 import { useTheme } from 'styled-components';
 
 import { CityCard } from '~/components/CityCard';
 import { Loading } from '~/components/Loading';
+import Presence from '~/components/Presence';
 
 import { CityInfoDTO } from '~/dtos/CityInfoDTO';
 
-import SearchIllustration from '~/assets/location-search.svg';
-
+import SearchImage from './components/SearchImage';
 import {
   ClearIconWrapper,
   ClearTextButton,
@@ -35,6 +36,20 @@ export function SearchScreen() {
   const [cityIsAlreadyStored, setCityIsAlreadyStored] = useState(false);
   const [cityName, setCityName] = useState('');
   const [cityInfo, setCityInfo] = useState<CityInfoDTO>({} as CityInfoDTO);
+
+  const pressAnimationState = useAnimationState({
+    from: {
+      opacity: 0,
+      scale: 0.8,
+    },
+    to: {
+      opacity: 1,
+      scale: 1,
+    },
+    pressed: {
+      scale: [0.8, 1],
+    },
+  });
 
   const handleGetCityInfo = async () => {
     setIsLoading(true);
@@ -124,24 +139,52 @@ export function SearchScreen() {
             onSubmitEditing={handleGetCityInfo}
           />
 
-          {!!cityName.trim() && (
-            <ClearTextButton onPress={() => setCityName('')}>
-              <ClearIconWrapper>
-                <Ionicons
-                  name="close-outline"
-                  size={18}
-                  color={theme.colors.text}
-                />
-              </ClearIconWrapper>
-            </ClearTextButton>
-          )}
+          <AnimatePresence>
+            {!!cityName.trim() && (
+              <ClearTextButton onPress={() => setCityName('')}>
+                <MotiView
+                  from={{
+                    opacity: 0,
+                    scale: 0.8,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.8,
+                  }}
+                  transition={{
+                    type: 'timing',
+                    duration: 80,
+                  }}
+                >
+                  <ClearIconWrapper>
+                    <Ionicons
+                      name="close-outline"
+                      size={18}
+                      color={theme.colors.text}
+                    />
+                  </ClearIconWrapper>
+                </MotiView>
+              </ClearTextButton>
+            )}
+          </AnimatePresence>
 
-          <SearchButton onPress={handleGetCityInfo}>
-            <Ionicons
-              name="search-outline"
-              size={24}
-              color={theme.colors.text}
-            />
+          <SearchButton
+            onPress={() => {
+              handleGetCityInfo();
+              pressAnimationState.transitionTo('pressed');
+            }}
+          >
+            <MotiView state={pressAnimationState}>
+              <Ionicons
+                name="search-outline"
+                size={24}
+                color={theme.colors.text}
+              />
+            </MotiView>
           </SearchButton>
         </InputWrapper>
       </Header>
@@ -151,17 +194,19 @@ export function SearchScreen() {
       ) : (
         <Content>
           {cityInfo.id ? (
-            <CityCard
-              data={{
-                name: cityInfo.name,
-                country: cityInfo.country,
-                addCity: handleAddNewCity,
-                cityIsAlreadyStored,
-              }}
-            />
+            <Presence>
+              <CityCard
+                data={{
+                  name: cityInfo.name,
+                  country: cityInfo.country,
+                  addCity: handleAddNewCity,
+                  cityIsAlreadyStored,
+                }}
+              />
+            </Presence>
           ) : (
             <InitialMessage>
-              <SearchIllustration height={200} />
+              <SearchImage />
 
               <MessageTitle>Buscar cidade!</MessageTitle>
 
