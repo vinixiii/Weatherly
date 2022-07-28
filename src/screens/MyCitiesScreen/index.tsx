@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Alert } from 'react-native';
+import { Layout } from 'react-native-reanimated';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -8,9 +9,11 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
+import { AnimatePresence } from 'moti';
 
 import { CityWeatherCard } from '~/components/CityWeatherCard';
 import { Loading } from '~/components/Loading';
+import Presence from '~/components/Presence';
 
 import { CityInfoDTO } from '~/dtos/CityInfoDTO';
 import { CityWeatherInfoDTO } from '~/dtos/CityWeatherInfoDTO';
@@ -253,15 +256,18 @@ export function MyCitiesScreen({ navigation }: ScreenProps) {
       ) : (
         <Content>
           {sortedCities.length > 0 ? (
-            sortedCities.map(item => (
-              <CityWeatherCard
-                key={item.name}
-                data={item}
-                onPress={() => handleShowCarDetails(item)}
-                onDelete={() => handleDelete(item.name)}
-                onFavorite={() => handleFavorite(item.name)}
-              />
-            ))
+            <AnimatePresence>
+              {sortedCities.map((item, index) => (
+                <Presence key={item.name} layout={Layout} index={index}>
+                  <CityWeatherCard
+                    data={item}
+                    onPress={() => handleShowCarDetails(item)}
+                    onDelete={() => handleDelete(item.name)}
+                    onFavorite={() => handleFavorite(item.name)}
+                  />
+                </Presence>
+              ))}
+            </AnimatePresence>
           ) : (
             <InitialMessage>
               <CityIllustration height={200} />
