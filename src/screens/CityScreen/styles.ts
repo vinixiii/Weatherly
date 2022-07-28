@@ -115,7 +115,8 @@ export const Info = styled.View`
   justify-content: center;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.primaryBackground};
-  margin-right: 12px;
+  margin-right: 6px;
+  margin-left: 6px;
   padding: 16px;
 `;
 

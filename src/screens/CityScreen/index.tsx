@@ -1,12 +1,15 @@
 import React, { useCallback, useEffect } from 'react';
 import { BackHandler } from 'react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 // eslint-disable-next-line import/no-duplicates
 import { format } from 'date-fns';
 // eslint-disable-next-line import/no-duplicates
 import { ptBR } from 'date-fns/locale';
+import { MotiView } from 'moti';
 
 import { BackButton } from '~/components/BackButton';
+import Presence from '~/components/Presence';
 import { WeekdayCard } from '~/components/WeekdayCard';
 
 import { CityWeatherInfoDTO } from '~/dtos/CityWeatherInfoDTO';
@@ -20,24 +23,24 @@ import WindSvg from '~/assets/wind.svg';
 import { ScreenProps } from '~/@types/react-navigation';
 
 import {
-  Container,
-  Header,
   City,
-  Title,
-  Subtitle,
+  Container,
   Content,
-  MainInfo,
   CurrentInfo,
-  Icon,
-  WeatherDescription,
   CurrentTemperature,
-  MinMaxTemperature,
-  Min,
-  Max,
-  SideInfo,
-  NextDays,
+  Header,
+  Icon,
   Info,
   InfoTitle,
+  MainInfo,
+  Max,
+  Min,
+  MinMaxTemperature,
+  NextDays,
+  SideInfo,
+  Subtitle,
+  Title,
+  WeatherDescription,
 } from './styles';
 
 interface IParams {
@@ -83,51 +86,90 @@ export function CityScreen({ navigation, route }: ScreenProps) {
 
   return (
     <Container>
-      <Header>
-        <BackButton onPress={handleGoBack} />
+      <Presence index={1}>
+        <Header>
+          <BackButton onPress={handleGoBack} />
 
-        <City>
-          <Title>
-            {city.name}, {city.country}
-          </Title>
-          <Subtitle>Hoje</Subtitle>
-        </City>
-      </Header>
+          <City>
+            <Title>
+              {city.name}, {city.country}
+            </Title>
+
+            <Subtitle>Hoje</Subtitle>
+          </City>
+        </Header>
+      </Presence>
 
       <Content>
         <MainInfo>
           <CurrentInfo>
-            <CurrentTemperature>{currentTemp}ºC</CurrentTemperature>
-            <WeatherDescription>{currentWeatherDesc}</WeatherDescription>
+            <Presence index={2}>
+              <CurrentTemperature>{currentTemp}ºC</CurrentTemperature>
+            </Presence>
+
+            <Presence index={3}>
+              <WeatherDescription>{currentWeatherDesc}</WeatherDescription>
+            </Presence>
           </CurrentInfo>
-          <Icon
-            source={{ uri: `https://openweathermap.org/img/wn/${icon}@4x.png` }}
-          />
+
+          <MotiView
+            from={{
+              opacity: 0,
+              translateY: -58,
+            }}
+            animate={{
+              opacity: 1,
+              translateY: -46,
+              right: RFValue(-24),
+            }}
+            delay={4 * 80}
+          >
+            <Icon
+              source={{
+                uri: `https://openweathermap.org/img/wn/${icon}@4x.png`,
+              }}
+            />
+          </MotiView>
         </MainInfo>
 
         <MinMaxTemperature>
-          <Min>min. {dailyMinTemp}ºC</Min>
-          <Max>max. {dailyMaxTemp}ºC</Max>
+          <Presence index={5}>
+            <Min>min. {dailyMinTemp}ºC</Min>
+          </Presence>
+
+          <Presence index={6}>
+            <Max>max. {dailyMaxTemp}ºC</Max>
+          </Presence>
         </MinMaxTemperature>
 
         <SideInfo>
-          <Info>
-            <HumiditySvg width={32} height={32} />
-            <InfoTitle>{city.current.humidity}%</InfoTitle>
-          </Info>
-          <Info>
-            <WindSvg width={32} height={32} />
-            <InfoTitle>{currentWindSpeed} km/h</InfoTitle>
-          </Info>
-          <Info>
-            <CloudSvg width={32} height={32} />
-            <InfoTitle>{city.current.clouds}%</InfoTitle>
-          </Info>
+          <Presence index={7} style={{ flex: 1 }}>
+            <Info>
+              <HumiditySvg width={32} height={32} />
+              <InfoTitle>{city.current.humidity}%</InfoTitle>
+            </Info>
+          </Presence>
+
+          <Presence index={8} style={{ flex: 1 }}>
+            <Info>
+              <WindSvg width={32} height={32} />
+              <InfoTitle>{currentWindSpeed} km/h</InfoTitle>
+            </Info>
+          </Presence>
+
+          <Presence index={9} style={{ flex: 1 }}>
+            <Info>
+              <CloudSvg width={32} height={32} />
+              <InfoTitle>{city.current.clouds}%</InfoTitle>
+            </Info>
+          </Presence>
         </SideInfo>
 
         <NextDays>
-          {formattedDailyData.map(item => (
-            <WeekdayCard key={String(item.date)} data={item} />
+          {formattedDailyData.map((item, index) => (
+            <Presence key={String(item.date)} index={index + 10}>
+              <WeekdayCard data={item} />
+            </Presence>
           ))}
         </NextDays>
       </Content>
