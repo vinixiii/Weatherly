@@ -41,6 +41,11 @@ export const ClearTextButton = styled.TouchableOpacity.attrs({
   margin-left: ${RFValue(24)}px;
   align-items: center;
   justify-content: center;
+`;
+
+export const ClearIconWrapper = styled.View`
+  align-items: center;
+  justify-content: center;
   background-color: ${({ theme }) => theme.colors.secondaryBackground};
   border-radius: ${RFValue(24)}px;
 `;
