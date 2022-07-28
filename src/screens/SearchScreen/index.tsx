@@ -13,6 +13,7 @@ import { CityInfoDTO } from '~/dtos/CityInfoDTO';
 import SearchIllustration from '~/assets/location-search.svg';
 
 import {
+  ClearIconWrapper,
   ClearTextButton,
   Container,
   Content,
@@ -125,11 +126,13 @@ export function SearchScreen() {
 
           {!!cityName.trim() && (
             <ClearTextButton onPress={() => setCityName('')}>
-              <Ionicons
-                name="close-outline"
-                size={18}
-                color={theme.colors.text}
-              />
+              <ClearIconWrapper>
+                <Ionicons
+                  name="close-outline"
+                  size={18}
+                  color={theme.colors.text}
+                />
+              </ClearIconWrapper>
             </ClearTextButton>
           )}
 
