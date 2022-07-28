@@ -1,18 +1,15 @@
 import React from 'react';
-import { ActivityIndicator } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from 'styled-components';
 
-import { Container, CityInfo, CityName, Country, AddButton } from './styles';
+import { AddButton, CityInfo, CityName, Container, Country } from './styles';
 
 interface ICityCardData {
   name: string;
   country: string;
   addCity: () => void;
-  icon: 'add-sharp' | 'checkmark-sharp';
-  isAddingCity: boolean;
-  isAddButtonDisabled: boolean;
+  cityIsAlreadyStored: boolean;
 }
 
 interface ICityCard {
@@ -29,23 +26,15 @@ export function CityCard({ data }: ICityCard) {
         <Country>{data.country}</Country>
       </CityInfo>
 
-      <AddButton onPress={data.addCity} disabled={data.isAddButtonDisabled}>
-        {data.isAddingCity ? (
-          <ActivityIndicator
-            color={theme.colors.title}
-            size="large"
-            style={{ flex: 1 }}
+      <AddButton onPress={data.addCity} disabled={data.cityIsAlreadyStored}>
+        {data.cityIsAlreadyStored ? (
+          <Ionicons
+            name="checkmark-sharp"
+            size={24}
+            color={theme.colors.success}
           />
         ) : (
-          <Ionicons
-            name={data.icon}
-            size={24}
-            color={
-              data.isAddButtonDisabled
-                ? theme.colors.success
-                : theme.colors.main
-            }
-          />
+          <Ionicons name="add-sharp" size={24} color={theme.colors.main} />
         )}
       </AddButton>
     </Container>

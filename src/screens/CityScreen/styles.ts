@@ -39,9 +39,12 @@ export const Subtitle = styled.Text`
   text-align: right;
 `;
 
-export const Content = styled.ScrollView`
-  flex: 1;
-`;
+export const Content = styled.ScrollView.attrs({
+  showsVerticalScrollIndicator: false,
+  contentContainerStyle: {
+    flexGrow: 1,
+  },
+})``;
 
 export const MainInfo = styled.View`
   width: 100%;
@@ -71,7 +74,6 @@ export const WeatherDescription = styled.Text`
 export const Icon = styled.Image`
   position: absolute;
   top: -36px;
-  right: 24px;
   right: ${RFValue(8)}px;
   width: ${RFValue(150)}px;
   height: ${RFValue(150)}px;
