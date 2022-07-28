@@ -31,7 +31,6 @@ export function SearchScreen() {
   const theme = useTheme();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isAddingCity, setIsAddingCity] = useState(false);
   const [cityIsAlreadyStored, setCityIsAlreadyStored] = useState(false);
   const [cityName, setCityName] = useState('');
   const [cityInfo, setCityInfo] = useState<CityInfoDTO>({} as CityInfoDTO);
@@ -67,8 +66,6 @@ export function SearchScreen() {
   };
 
   async function handleAddNewCity() {
-    setIsAddingCity(true);
-
     const dataStorageKey = `@weatherly:cities`;
 
     try {
@@ -78,11 +75,11 @@ export function SearchScreen() {
       const cities = [...currentData, cityInfo];
 
       await AsyncStorage.setItem(dataStorageKey, JSON.stringify(cities));
+
+      setCityIsAlreadyStored(true);
     } catch (error) {
       console.error(error);
       Alert.alert('Oops!', 'Não foi possível adicionar esta cidade.');
-    } finally {
-      setIsAddingCity(false);
     }
   }
 
@@ -106,7 +103,7 @@ export function SearchScreen() {
     }
 
     checkIfIsStoredCity();
-  }, [cityInfo, isAddingCity, isLoading]);
+  }, [cityInfo.name]);
 
   useEffect(() => {
     if (cityName === '') {
@@ -156,9 +153,7 @@ export function SearchScreen() {
                 name: cityInfo.name,
                 country: cityInfo.country,
                 addCity: handleAddNewCity,
-                icon: cityIsAlreadyStored ? 'checkmark-sharp' : 'add-sharp',
-                isAddingCity,
-                isAddButtonDisabled: cityIsAlreadyStored,
+                cityIsAlreadyStored,
               }}
             />
           ) : (
