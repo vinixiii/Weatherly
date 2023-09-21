@@ -48,7 +48,7 @@ export function CityCard({ data }: ICityCard) {
 
       <AddButton onPress={data.addCity} disabled={data.cityIsAlreadyStored}>
         <AnimatePresence exitBeforeEnter>
-          {data.cityIsAlreadyStored ? (
+          {data.cityIsAlreadyStored && (
             <MotiView key="check-icon" {...presenceAnimation}>
               <Ionicons
                 name="checkmark-sharp"
@@ -56,8 +56,10 @@ export function CityCard({ data }: ICityCard) {
                 color={theme.colors.success}
               />
             </MotiView>
-          ) : (
-            <MotiView key="add-icon" {...presenceAnimation}>
+          )}
+
+          {!data.cityIsAlreadyStored && (
+            <MotiView key="check-icon" {...presenceAnimation}>
               <Ionicons name="add-sharp" size={24} color={theme.colors.main} />
             </MotiView>
           )}

@@ -1,4 +1,22 @@
-export default {
+export interface WeatherlyTheme {
+  colors: {
+    main: string;
+    primaryBackground: string;
+    secondaryBackground: string;
+    title: string;
+    text: string;
+    textDetail: string;
+    success: string;
+    line: string;
+  };
+  fonts: {
+    primary400: string;
+    primary500: string;
+    primary600: string;
+  };
+}
+
+const theme: WeatherlyTheme = {
   colors: {
     main: '#EB6E4B',
     primaryBackground: '#F8F9FA',
@@ -19,3 +37,5 @@ export default {
     primary600: 'Archivo_600SemiBold',
   },
 };
+
+export default theme;

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,15 +28,17 @@ import {
   TextInput,
 } from './styles';
 
-const { WEATHER_API_KEY } = process.env;
+const WEATHER_API_KEY = process.env.EXPO_PUBLIC_WEATHER_API_KEY;
 
 export function SearchScreen() {
   const theme = useTheme();
 
+  const insets = useSafeAreaInsets();
+
   const [isLoading, setIsLoading] = useState(false);
   const [cityIsAlreadyStored, setCityIsAlreadyStored] = useState(false);
   const [cityName, setCityName] = useState('');
-  const [cityInfo, setCityInfo] = useState<CityInfoDTO>({} as CityInfoDTO);
+  const [cityInfo, setCityInfo] = useState<CityInfoDTO | null>(null);
 
   const pressAnimationState = useAnimationState({
     from: {
@@ -62,16 +65,18 @@ export function SearchScreen() {
         const response = await fetch(BASE_URL);
         const data = await response.json();
 
-        const formattedData = {
-          id: String(data.id),
-          name: data.name,
-          country: data.sys.country,
-          lon: String(data.coord.lon),
-          lat: String(data.coord.lat),
-          favorite: false,
-        };
+        if (response.status === 200) {
+          const formattedData = {
+            id: String(data.id),
+            name: data.name,
+            country: data.sys.country,
+            lon: String(data.coord.lon),
+            lat: String(data.coord.lat),
+            favorite: false,
+          };
 
-        setCityInfo(formattedData);
+          setCityInfo(formattedData);
+        }
       }
     } catch (error: any) {
       console.error(error);
@@ -106,7 +111,7 @@ export function SearchScreen() {
       const transactions = data ? JSON.parse(data) : [];
 
       const storedCities = transactions.filter(
-        (item: CityInfoDTO) => item.name === cityInfo.name,
+        (item: CityInfoDTO) => item.name === cityInfo?.name,
       );
 
       if (storedCities.length > 0) {
@@ -119,7 +124,7 @@ export function SearchScreen() {
     }
 
     checkIfIsStoredCity();
-  }, [cityInfo.name]);
+  }, [cityInfo?.name]);
 
   useEffect(() => {
     if (cityName === '') {
@@ -129,7 +134,7 @@ export function SearchScreen() {
 
   return (
     <Container>
-      <Header>
+      <Header insetsTop={insets.top}>
         <InputWrapper>
           <TextInput
             placeholder="Nome da cidade"
@@ -193,12 +198,12 @@ export function SearchScreen() {
         <Loading />
       ) : (
         <Content>
-          {cityInfo.id ? (
+          {cityInfo?.id ? (
             <Presence>
               <CityCard
                 data={{
-                  name: cityInfo.name,
-                  country: cityInfo.country,
+                  name: cityInfo?.name,
+                  country: cityInfo?.country,
                   addCity: handleAddNewCity,
                   cityIsAlreadyStored,
                 }}

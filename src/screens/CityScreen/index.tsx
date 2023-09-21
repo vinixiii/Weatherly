@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect } from 'react';
-import { BackHandler } from 'react-native';
+import React, { useCallback } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 // eslint-disable-next-line import/no-duplicates
 import { format } from 'date-fns';
 // eslint-disable-next-line import/no-duplicates
@@ -12,15 +13,13 @@ import { BackButton } from '~/components/BackButton';
 import Presence from '~/components/Presence';
 import { WeekdayCard } from '~/components/WeekdayCard';
 
-import { CityWeatherInfoDTO } from '~/dtos/CityWeatherInfoDTO';
-
 import { toCapitalize } from '~/utils/toCapitalize';
 
 import CloudSvg from '~/assets/cloud.svg';
 import HumiditySvg from '~/assets/humidity.svg';
 import WindSvg from '~/assets/wind.svg';
 
-import { ScreenProps } from '~/@types/react-navigation';
+import { RootStackParamList } from '~/@types/navigation';
 
 import {
   City,
@@ -43,12 +42,16 @@ import {
   WeatherDescription,
 } from './styles';
 
-interface IParams {
-  city: CityWeatherInfoDTO;
-}
+type CityScreenRoute = RouteProp<RootStackParamList, 'CityScreen'>;
 
-export function CityScreen({ navigation, route }: ScreenProps) {
-  const { city } = route.params as IParams;
+export function CityScreen() {
+  const { navigate } = useNavigation();
+
+  const {
+    params: { city },
+  } = useRoute<CityScreenRoute>();
+
+  const insets = useSafeAreaInsets();
 
   const currentWeatherDesc = toCapitalize(city.current.weather.description);
   const currentTemp = Math.round(city.current.temp);
@@ -70,24 +73,24 @@ export function CityScreen({ navigation, route }: ScreenProps) {
   });
 
   const handleGoBack = useCallback(() => {
-    navigation.navigate('MyCitiesScreen', { isFromCityScreen: true });
+    navigate('MyCitiesScreen', { isFromCityScreen: true });
     return true;
-  }, [navigation]);
+  }, [navigate]);
 
-  useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handleGoBack);
-    navigation.addListener('gestureEnd', handleGoBack);
+  // useEffect(() => {
+  //   BackHandler.addEventListener('hardwareBackPress', handleGoBack);
+  //   addListener('gestureEnd', handleGoBack);
 
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleGoBack);
-      navigation.removeListener('gestureEnd', handleGoBack);
-    };
-  }, [navigation, handleGoBack]);
+  //   return () => {
+  //     BackHandler.removeEventListener('hardwareBackPress', handleGoBack);
+  //     navigation.removeListener('gestureEnd', handleGoBack);
+  //   };
+  // }, [navigation, handleGoBack]);
 
   return (
     <Container>
       <Presence index={1}>
-        <Header>
+        <Header insetsTop={insets.top}>
           <BackButton onPress={handleGoBack} />
 
           <City>

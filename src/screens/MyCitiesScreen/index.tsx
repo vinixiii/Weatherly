@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Alert } from 'react-native';
 import { Layout } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -20,7 +21,7 @@ import { CityWeatherInfoDTO } from '~/dtos/CityWeatherInfoDTO';
 
 import CityIllustration from '~/assets/city.svg';
 
-import { RootStackParamList, ScreenProps } from '~/@types/react-navigation';
+import { RootStackParamList } from '~/@types/navigation';
 
 import {
   Container,
@@ -34,7 +35,7 @@ import {
   Title,
 } from './styles';
 
-const { WEATHER_API_KEY } = process.env;
+const WEATHER_API_KEY = process.env.EXPO_PUBLIC_WEATHER_API_KEY;
 
 interface ICurrentWeather {
   dt: number;
@@ -73,10 +74,13 @@ interface ICityWeatherResponse {
 
 type MyCitiesScreenRoute = RouteProp<RootStackParamList, 'MyCitiesScreen'>;
 
-export function MyCitiesScreen({ navigation }: ScreenProps) {
-  const { setParams } = useNavigation();
+export function MyCitiesScreen() {
+  const { navigate, setParams } = useNavigation();
+
   const { params } = useRoute<MyCitiesScreenRoute>();
   const isFromCityScreen = params?.isFromCityScreen;
+
+  const insets = useSafeAreaInsets();
 
   const [isLoading, setIsLoading] = useState(false);
   const [myCities, setMyCities] = useState<CityWeatherInfoDTO[]>([]);
@@ -96,7 +100,7 @@ export function MyCitiesScreen({ navigation }: ScreenProps) {
   }, [myCities]);
 
   const handleShowCarDetails = (city: CityWeatherInfoDTO) => {
-    navigation.navigate('CityScreen', { city });
+    navigate('CityScreen', { city });
   };
 
   const handleDelete = async (name: string) => {
@@ -244,7 +248,7 @@ export function MyCitiesScreen({ navigation }: ScreenProps) {
 
   return (
     <Container>
-      <Header>
+      <Header insetsTop={insets.top}>
         <HeaderContent>
           <Title>Weatherly</Title>
           <Subtitle>Minhas cidades</Subtitle>

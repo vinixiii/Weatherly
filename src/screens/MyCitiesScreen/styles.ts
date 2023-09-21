@@ -1,5 +1,4 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 import styled from 'styled-components/native';
@@ -9,10 +8,10 @@ export const Container = styled(GestureHandlerRootView)`
   background-color: ${({ theme }) => theme.colors.primaryBackground};
 `;
 
-export const Header = styled.View`
+export const Header = styled.View<{ insetsTop: number }>`
   width: 100%;
   padding: 0 ${RFValue(24)}px;
-  padding-top: ${getStatusBarHeight() + 36}px;
+  padding-top: ${({ insetsTop }) => insetsTop + 36}px;
   padding-bottom: ${RFValue(24)}px;
   background-color: ${({ theme }) => theme.colors.secondaryBackground};
   border-bottom-width: 1px;

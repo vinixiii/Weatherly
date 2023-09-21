@@ -1,10 +1,21 @@
 {
+  "name": "Weatherly",
+  "displayName": "Weatherly",
   "expo": {
     "name": "Weatherly",
-    "android": { "softwareKeyboardLayoutMode": "pan" },
     "slug": "Weatherly",
     "version": "1.0.0",
-    "assetBundlePatterns": ["**/*"]
-  },
-  "name": "Weatherly"
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "bundleIdentifier": "com.Weatherly"
+    },
+    "android": {
+      "softwareKeyboardLayoutMode": "pan",
+      "package": "com.weatherly"
+    },
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "http://localhost:3000/api/manifest"
+    }
+  }
 }

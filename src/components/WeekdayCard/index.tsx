@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacityProps } from 'react-native';
+import { ViewProps } from 'react-native';
 
 // eslint-disable-next-line import/no-duplicates
 import { addDays, format } from 'date-fns';
@@ -9,22 +9,22 @@ import { ptBR } from 'date-fns/locale';
 import { toCapitalize } from '~/utils/toCapitalize';
 
 import {
-  Container,
-  WeatherInfo,
-  CityInfo,
-  Name,
-  Description,
-  Weather,
-  Icon,
-  Temperature,
   AditionalInfo,
+  CityInfo,
+  Container,
+  DateText,
+  Description,
+  Icon,
+  MaxTemperature,
   MinMaxTemperature,
   MinTemperature,
-  MaxTemperature,
-  DateText,
+  Name,
+  Temperature,
+  Weather,
+  WeatherInfo,
 } from './styles';
 
-interface IWeekdayCard extends TouchableOpacityProps {
+interface IWeekdayCard extends ViewProps {
   data: {
     date: string;
     weekday: string;
