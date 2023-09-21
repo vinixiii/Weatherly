@@ -7,15 +7,22 @@
     "version": "1.0.0",
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "bundleIdentifier": "com.Weatherly"
+      "bundleIdentifier": "com.weatherly",
+      "googleServicesFile": "./ios/Weatherly/GoogleService-Info.plist"
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
-      "package": "com.weatherly"
+      "package": "com.weatherly",
+      "googleServicesFile": "./android/app/google-services.json"
     },
     "runtimeVersion": "1.0.0",
     "updates": {
       "url": "http://localhost:3000/api/manifest"
-    }
+    },
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/crashlytics",
+      "@react-native-firebase/perf"
+    ]
   }
 }
