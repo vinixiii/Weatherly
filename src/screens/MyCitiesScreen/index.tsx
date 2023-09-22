@@ -1,9 +1,10 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Button } from 'react-native';
 import { Layout } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import crashlytics from '@react-native-firebase/crashlytics';
 import {
   RouteProp,
   useFocusEffect,
@@ -254,6 +255,8 @@ export function MyCitiesScreen() {
           <Subtitle>Minhas cidades</Subtitle>
         </HeaderContent>
       </Header>
+
+      <Button onPress={() => crashlytics().crash()} title="Test Crash" />
 
       {isLoading ? (
         <Loading />
