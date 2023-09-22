@@ -4,6 +4,7 @@ import { Layout } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import analytics from '@react-native-firebase/analytics';
 import crashlytics from '@react-native-firebase/crashlytics';
 import {
   RouteProp,
@@ -100,7 +101,11 @@ export function MyCitiesScreen() {
       .sort((a: any, b: any) => b.favorite - a.favorite);
   }, [myCities]);
 
-  const handleShowCarDetails = (city: CityWeatherInfoDTO) => {
+  const handlePressCityWeatherCard = (city: CityWeatherInfoDTO) => {
+    analytics().logEvent('city_weather_card_pressed', {
+      cityName: city.name,
+    });
+
     navigate('CityScreen', { city });
   };
 
@@ -147,6 +152,10 @@ export function MyCitiesScreen() {
       foundStoredCity.favorite = !foundStoredCity.favorite;
 
       await AsyncStorage.setItem(dataStorageKey, JSON.stringify(storedData));
+
+      analytics().logEvent('city_weather_card_favorited', {
+        cityName: name,
+      });
     } catch (error) {
       console.error(error);
       Alert.alert(
@@ -268,7 +277,7 @@ export function MyCitiesScreen() {
                 <Presence key={item.name} layout={Layout} index={index}>
                   <CityWeatherCard
                     data={item}
-                    onPress={() => handleShowCarDetails(item)}
+                    onPress={() => handlePressCityWeatherCard(item)}
                     onDelete={() => handleDelete(item.name)}
                     onFavorite={() => handleFavorite(item.name)}
                   />
