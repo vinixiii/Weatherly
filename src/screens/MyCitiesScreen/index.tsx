@@ -18,6 +18,8 @@ import { CityWeatherCard } from '~/components/CityWeatherCard';
 import { Loading } from '~/components/Loading';
 import Presence from '~/components/Presence';
 
+import useAuth from '~/hooks/useAuth';
+
 import { CityInfoDTO } from '~/dtos/CityInfoDTO';
 import { CityWeatherInfoDTO } from '~/dtos/CityWeatherInfoDTO';
 
@@ -83,6 +85,7 @@ export function MyCitiesScreen() {
   const isFromCityScreen = params?.isFromCityScreen;
 
   const insets = useSafeAreaInsets();
+  const { signOut } = useAuth();
 
   const [isLoading, setIsLoading] = useState(false);
   const [myCities, setMyCities] = useState<CityWeatherInfoDTO[]>([]);
@@ -266,6 +269,7 @@ export function MyCitiesScreen() {
       </Header>
 
       <Button onPress={() => crashlytics().crash()} title="Test Crash" />
+      <Button onPress={signOut} title="Sign Out" />
 
       {isLoading ? (
         <Loading />
