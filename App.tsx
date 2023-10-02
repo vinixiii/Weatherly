@@ -11,6 +11,8 @@ import {
 import AppLoading from 'expo-app-loading';
 import { ThemeProvider } from 'styled-components/native';
 
+import { AuthContextProvider } from '~/contexts/AuthContext';
+
 import theme from './src/global/styles/theme';
 import { Routes } from './src/routes';
 
@@ -28,13 +30,15 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <ThemeProvider theme={theme}>
-        <StatusBar
-          barStyle="dark-content"
-          backgroundColor="transparent"
-          translucent
-        />
+        <AuthContextProvider>
+          <StatusBar
+            barStyle="dark-content"
+            backgroundColor="transparent"
+            translucent
+          />
 
-        <Routes />
+          <Routes />
+        </AuthContextProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );
