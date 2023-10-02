@@ -1,26 +1,15 @@
-export interface WeatherlyTheme {
-  colors: {
-    main: string;
-    primaryBackground: string;
-    secondaryBackground: string;
-    title: string;
-    text: string;
-    textDetail: string;
-    success: string;
-    line: string;
-  };
-  fonts: {
-    primary400: string;
-    primary500: string;
-    primary600: string;
-  };
-}
+type Theme = typeof theme;
 
-const theme: WeatherlyTheme = {
+export interface WeatherlyTheme extends Theme {}
+
+const theme = {
   colors: {
     main: '#EB6E4B',
     primaryBackground: '#F8F9FA',
     secondaryBackground: '#FFFFFF',
+
+    gray400: '#9ca3af',
+    gray500: '#6b7280',
 
     title: '#2F2E41',
     text: '#3F3D56',
@@ -29,6 +18,8 @@ const theme: WeatherlyTheme = {
     success: '#12a454',
 
     line: '#EBEBF0',
+
+    border: '#3F3D56',
   },
 
   fonts: {
