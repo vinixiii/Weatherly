@@ -108,6 +108,9 @@ PODS:
     - Firebase/Core (= 10.14.0)
   - Firebase/Analytics (10.14.0):
     - Firebase/Core
+  - Firebase/Auth (10.14.0):
+    - Firebase/CoreOnly
+    - FirebaseAuth (~> 10.14.0)
   - Firebase/Core (10.14.0):
     - Firebase/CoreOnly
     - FirebaseAnalytics (~> 10.14.0)
@@ -139,6 +142,14 @@ PODS:
     - GoogleUtilities/Network (~> 7.11)
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30910.0, >= 2.30908.0)
+  - FirebaseAppCheckInterop (10.15.0)
+  - FirebaseAuth (10.14.0):
+    - FirebaseAppCheckInterop (~> 10.0)
+    - FirebaseCore (~> 10.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
+    - GoogleUtilities/Environment (~> 7.8)
+    - GTMSessionFetcher/Core (< 4.0, >= 2.1)
+    - RecaptchaInterop (~> 100.0)
   - FirebaseCore (10.14.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
@@ -243,6 +254,7 @@ PODS:
     - GoogleUtilities/MethodSwizzler
   - GoogleUtilities/UserDefaults (7.11.5):
     - GoogleUtilities/Logger
+  - GTMSessionFetcher/Core (3.1.1)
   - hermes-engine (0.72.4):
     - hermes-engine/Pre-built (= 0.72.4)
   - hermes-engine/Pre-built (0.72.4)
@@ -672,6 +684,7 @@ PODS:
     - React-jsi (= 0.72.4)
     - React-logger (= 0.72.4)
     - React-perflogger (= 0.72.4)
+  - RecaptchaInterop (100.0.0)
   - RNCAsyncStorage (1.18.2):
     - React-Core
   - RNFBAnalytics (18.4.0):
@@ -681,6 +694,10 @@ PODS:
   - RNFBApp (18.4.0):
     - Firebase/CoreOnly (= 10.14.0)
     - React-Core
+  - RNFBAuth (18.4.0):
+    - Firebase/Auth (= 10.14.0)
+    - React-Core
+    - RNFBApp
   - RNFBCrashlytics (18.4.0):
     - Firebase/Crashlytics (= 10.14.0)
     - FirebaseCoreExtension (= 10.14.0)
@@ -801,6 +818,7 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNFBAnalytics (from `../node_modules/@react-native-firebase/analytics`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
+  - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
   - "RNFBCrashlytics (from `../node_modules/@react-native-firebase/crashlytics`)"
   - "RNFBPerf (from `../node_modules/@react-native-firebase/perf`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
@@ -815,6 +833,8 @@ SPEC REPOS:
     - Firebase
     - FirebaseABTesting
     - FirebaseAnalytics
+    - FirebaseAppCheckInterop
+    - FirebaseAuth
     - FirebaseCore
     - FirebaseCoreExtension
     - FirebaseCoreInternal
@@ -827,11 +847,13 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleUtilities
+    - GTMSessionFetcher
     - libevent
     - nanopb
     - PromisesObjC
     - PromisesSwift
     - ReachabilitySwift
+    - RecaptchaInterop
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -956,6 +978,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/analytics"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
+  RNFBAuth:
+    :path: "../node_modules/@react-native-firebase/auth"
   RNFBCrashlytics:
     :path: "../node_modules/@react-native-firebase/crashlytics"
   RNFBPerf:
@@ -998,6 +1022,8 @@ SPEC CHECKSUMS:
   Firebase: 6c1bf3f534bc422d52af2e41fe0d50bf08b6b773
   FirebaseABTesting: 7fa3bca17f79ac433301d20d5cd33401f7738dca
   FirebaseAnalytics: 5c6d58814afa4db82cf7fdbc02b0b0e2fa3d43ff
+  FirebaseAppCheckInterop: a8c555b1c2db1d9445e6c3a08a848167ddb7eb51
+  FirebaseAuth: bd1ae3d28beb83bfe9247e50eb82688b683dd770
   FirebaseCore: 6fc17ac9f03509d51c131298aacb3ee5698b4f02
   FirebaseCoreExtension: 976638051b1a46b503afce7ec80277f9161f2040
   FirebaseCoreInternal: 2f4bee5ed00301b5e56da0849268797a2dd31fb4
@@ -1011,6 +1037,7 @@ SPEC CHECKSUMS:
   GoogleAppMeasurement: 7fee012a868315d418f365fbc8d394d8e020e749
   GoogleDataTransport: 54dee9d48d14580407f8f5fbf2f496e92437a2f2
   GoogleUtilities: 13e2c67ede716b8741c7989e26893d151b2b2084
+  GTMSessionFetcher: e8647203b65cee28c5f73d0f473d096653945e72
   hermes-engine: 81191603c4eaa01f5e4ae5737a9efcf64756c7b2
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
@@ -1050,9 +1077,11 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 4941cc1b3cf08b792fbf666342c9fc95f1969035
   React-utils: b79f2411931f9d3ea5781404dcbb2fa8a837e13a
   ReactCommon: 4b2bdcb50a3543e1c2b2849ad44533686610826d
+  RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   RNCAsyncStorage: ddc4ee162bfd41b0d2c68bf2d95acd81dd7f1f93
   RNFBAnalytics: 022b068af943314036a53cfe792ec55ce95bea28
   RNFBApp: a0bc818210d2c452461842f7a0a4e456c11ed831
+  RNFBAuth: a304236349f219f95b5334977596253a04209fbf
   RNFBCrashlytics: 725154ad2eae4202b8b01ff41956465b9a73d097
   RNFBPerf: a487ea16c4d39b618b81de473ebb71284882ce7f
   RNGestureHandler: c0d04458598fcb26052494ae23dda8f8f5162b13
