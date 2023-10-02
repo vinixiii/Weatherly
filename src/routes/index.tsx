@@ -6,6 +6,9 @@ import {
   createNavigationContainerRef,
 } from '@react-navigation/native';
 
+import useAuth from '~/hooks/useAuth';
+
+import { AuthRoutes } from './app.auth.routes';
 import { TabRoutes } from './app.tab.routes';
 
 export const navigationRef = createNavigationContainerRef();
@@ -13,6 +16,8 @@ export const navigationRef = createNavigationContainerRef();
 const ignoreCatch = () => undefined;
 
 export function Routes() {
+  const { user } = useAuth();
+
   const routeNameRef = useRef<string>();
 
   return (
@@ -37,7 +42,7 @@ export function Routes() {
         routeNameRef.current = currentRouteName;
       }}
     >
-      <TabRoutes />
+      {user ? <TabRoutes /> : <AuthRoutes />}
     </NavigationContainer>
   );
 }
