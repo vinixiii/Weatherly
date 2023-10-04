@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
+import Config from 'react-native-config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Ionicons } from '@expo/vector-icons';
@@ -28,7 +29,7 @@ import {
   TextInput,
 } from './styles';
 
-const WEATHER_API_KEY = process.env.EXPO_PUBLIC_WEATHER_API_KEY;
+const { WEATHER_API_KEY } = Config;
 
 export function SearchScreen() {
   const theme = useTheme();

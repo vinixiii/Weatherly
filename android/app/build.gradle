@@ -4,6 +4,8 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'com.google.firebase.crashlytics'
 
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 
 /**
@@ -87,6 +89,7 @@ android {
     namespace 'com.weatherly'
     defaultConfig {
         applicationId 'com.weatherly'
+        resValue "string", "build_config_package", "com.weatherly"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

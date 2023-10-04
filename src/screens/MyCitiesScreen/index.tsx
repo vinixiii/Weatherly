@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Alert, Button } from 'react-native';
+import Config from 'react-native-config';
 import { Layout } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -39,7 +40,7 @@ import {
   Title,
 } from './styles';
 
-const WEATHER_API_KEY = process.env.EXPO_PUBLIC_WEATHER_API_KEY;
+const { WEATHER_API_KEY } = Config;
 
 interface ICurrentWeather {
   dt: number;
