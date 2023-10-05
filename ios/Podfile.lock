@@ -122,7 +122,10 @@ PODS:
   - Firebase/Performance (10.14.0):
     - Firebase/CoreOnly
     - FirebasePerformance (~> 10.14.0)
-  - FirebaseABTesting (10.15.0):
+  - Firebase/RemoteConfig (10.14.0):
+    - Firebase/CoreOnly
+    - FirebaseRemoteConfig (~> 10.14.0)
+  - FirebaseABTesting (10.16.0):
     - FirebaseCore (~> 10.0)
   - FirebaseAnalytics (10.14.0):
     - FirebaseAnalytics/AdIdSupport (= 10.14.0)
@@ -181,7 +184,7 @@ PODS:
     - GoogleUtilities/ISASwizzler (~> 7.8)
     - GoogleUtilities/MethodSwizzler (~> 7.8)
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseRemoteConfig (10.15.0):
+  - FirebaseRemoteConfig (10.14.0):
     - FirebaseABTesting (~> 10.0)
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
@@ -711,6 +714,10 @@ PODS:
     - Firebase/Performance (= 10.14.0)
     - React-Core
     - RNFBApp
+  - RNFBRemoteConfig (18.5.0):
+    - Firebase/RemoteConfig (= 10.14.0)
+    - React-Core
+    - RNFBApp
   - RNGestureHandler (2.12.1):
     - React-Core
   - RNReanimated (3.3.0):
@@ -826,6 +833,7 @@ DEPENDENCIES:
   - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
   - "RNFBCrashlytics (from `../node_modules/@react-native-firebase/crashlytics`)"
   - "RNFBPerf (from `../node_modules/@react-native-firebase/perf`)"
+  - "RNFBRemoteConfig (from `../node_modules/@react-native-firebase/remote-config`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -991,6 +999,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/crashlytics"
   RNFBPerf:
     :path: "../node_modules/@react-native-firebase/perf"
+  RNFBRemoteConfig:
+    :path: "../node_modules/@react-native-firebase/remote-config"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
@@ -1027,7 +1037,7 @@ SPEC CHECKSUMS:
   FBLazyVector: 5d4a3b7f411219a45a6d952f77d2c0a6c9989da5
   FBReactNativeSpec: 3fc2d478e1c4b08276f9dd9128f80ec6d5d85c1f
   Firebase: 6c1bf3f534bc422d52af2e41fe0d50bf08b6b773
-  FirebaseABTesting: 7fa3bca17f79ac433301d20d5cd33401f7738dca
+  FirebaseABTesting: 03f0a8b88cf618350527f2c6a2234e29b9c65064
   FirebaseAnalytics: 5c6d58814afa4db82cf7fdbc02b0b0e2fa3d43ff
   FirebaseAppCheckInterop: a8c555b1c2db1d9445e6c3a08a848167ddb7eb51
   FirebaseAuth: bd1ae3d28beb83bfe9247e50eb82688b683dd770
@@ -1037,7 +1047,7 @@ SPEC CHECKSUMS:
   FirebaseCrashlytics: 0fbfa4efa57e8a09d8bf195393b50c237e3322b5
   FirebaseInstallations: cae95cab0f965ce05b805189de1d4c70b11c76fb
   FirebasePerformance: 6747735bc7e2ff8f22af27803ddcb7b4425f327d
-  FirebaseRemoteConfig: 64b6ada098c649304114a817effd7e5f87229b11
+  FirebaseRemoteConfig: e22a706fa7ecc64135325f4c430a15af1e795535
   FirebaseSessions: ee59a7811bef4c15f65ef6472f3210faa293f9c8
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
@@ -1092,6 +1102,7 @@ SPEC CHECKSUMS:
   RNFBAuth: a304236349f219f95b5334977596253a04209fbf
   RNFBCrashlytics: 725154ad2eae4202b8b01ff41956465b9a73d097
   RNFBPerf: a487ea16c4d39b618b81de473ebb71284882ce7f
+  RNFBRemoteConfig: fb0fe40766576846ade5e6c200403381ff986021
   RNGestureHandler: c0d04458598fcb26052494ae23dda8f8f5162b13
   RNReanimated: 9f7068e43b9358a46a688d94a5a3adb258139457
   RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3

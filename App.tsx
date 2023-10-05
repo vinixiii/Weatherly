@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -8,6 +8,7 @@ import {
   Archivo_500Medium,
   Archivo_600SemiBold,
 } from '@expo-google-fonts/archivo';
+import remoteConfig from '@react-native-firebase/remote-config';
 import AppLoading from 'expo-app-loading';
 import { ThemeProvider } from 'styled-components/native';
 
@@ -22,6 +23,24 @@ export default function App() {
     Archivo_500Medium,
     Archivo_600SemiBold,
   });
+
+  useEffect(() => {
+    const initRemoteConfig = async () => {
+      const remoteConfigInstance = remoteConfig();
+
+      try {
+        remoteConfigInstance.setDefaults({
+          favorite_city_enabled: false,
+        });
+
+        await remoteConfigInstance.fetchAndActivate();
+      } catch {
+        //
+      }
+    };
+
+    initRemoteConfig();
+  }, []);
 
   if (!fontsLoaded) {
     return <AppLoading />;

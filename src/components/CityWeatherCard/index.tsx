@@ -2,6 +2,7 @@ import React from 'react';
 import { TouchableOpacityProps } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
+import remoteConfig from '@react-native-firebase/remote-config';
 import { useTheme } from 'styled-components';
 
 import { CityWeatherInfoDTO } from '~/dtos/CityWeatherInfoDTO';
@@ -46,6 +47,10 @@ export function CityWeatherCard({
   const dailyMaxTemp = Math.round(data.daily[0].temp.max);
   const { icon } = data.current.weather;
 
+  const isFavoriteCityEnabled = remoteConfig()
+    .getValue('favorite_city_enabled')
+    .asBoolean();
+
   return (
     <Container {...rest}>
       <WeatherInfo>
@@ -77,13 +82,16 @@ export function CityWeatherCard({
               color={theme.colors.text}
             />
           </DeleteButton>
-          <FavoriteButton onPress={onFavorite}>
-            <Ionicons
-              name={data.favorite ? 'heart' : 'heart-outline'}
-              size={24}
-              color={theme.colors.main}
-            />
-          </FavoriteButton>
+
+          {isFavoriteCityEnabled && (
+            <FavoriteButton onPress={onFavorite}>
+              <Ionicons
+                name={data.favorite ? 'heart' : 'heart-outline'}
+                size={24}
+                color={theme.colors.main}
+              />
+            </FavoriteButton>
+          )}
         </Buttons>
       </Actions>
     </Container>
