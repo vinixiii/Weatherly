@@ -31,7 +31,7 @@ export const Container = styled.TouchableOpacity.attrs({
   ${({ disabled }) =>
     disabled &&
     css`
-      border-width: unset;
+      border-width: 0;
       border-color: unset;
       background-color: ${({ theme }) => theme.colors.gray100};
     `}
