@@ -33,7 +33,9 @@ export function TabRoutes() {
     <Navigator
       screenOptions={{
         headerShown: false,
-        tabBarShowLabel: false,
+        tabBarLabelStyle: {
+          fontSize: 14,
+        },
         tabBarActiveTintColor: theme.colors.main,
         tabBarInactiveTintColor: theme.colors.textDetail,
         tabBarStyle: {
@@ -62,6 +64,7 @@ export function TabRoutes() {
         name="MyCitiesTabScreen"
         component={StackRoutes}
         options={{
+          tabBarLabel: 'Cidades',
           tabBarIcon: ({ color }) => (
             <Ionicons name="list-outline" size={24} color={color} />
           ),
@@ -74,6 +77,7 @@ export function TabRoutes() {
         name="SearchScreen"
         component={SearchScreen}
         options={{
+          tabBarLabel: 'Pesquisar',
           tabBarIcon: ({ color }) => (
             <Ionicons name="search-outline" size={24} color={color} />
           ),
