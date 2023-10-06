@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Button,
-  KeyboardAvoidingView,
-  View,
-} from 'react-native';
+import { Alert, KeyboardAvoidingView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import auth from '@react-native-firebase/auth';
-import { useTheme } from 'styled-components';
 
+import { Button } from '~/components/Button';
 import Input from '~/components/Input';
 
 import {
@@ -23,28 +17,36 @@ import {
 } from './styles';
 
 export default function SignInScreen() {
-  const theme = useTheme();
   const insets = useSafeAreaInsets();
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSignInLoading, setIsSignInLoading] = useState<boolean>(false);
+  const [isSignUpLoading, setIsSignUpLoading] = useState<boolean>(false);
 
   const signIn = () => {
-    setIsLoading(true);
+    setIsSignInLoading(true);
 
-    try {
-      auth().signInWithEmailAndPassword(email, password);
-    } catch (error: any) {
-      Alert.alert(`Não foi possível efetuar o login: ${error.message}`);
-    } finally {
-      setIsLoading(false);
-    }
+    auth()
+      .signInWithEmailAndPassword(email, password)
+      .catch(error => {
+        if (error.code === 'auth/invalid-email') {
+          Alert.alert(`Email inválido`);
+          return;
+        }
+
+        Alert.alert(
+          `Não foi possível efetuar o login. Revise suas credenciais e tente novamente.`,
+        );
+      })
+      .finally(() => {
+        setIsSignInLoading(false);
+      });
   };
 
   const signUp = () => {
-    setIsLoading(true);
+    setIsSignUpLoading(true);
 
     auth()
       .createUserWithEmailAndPassword(email, password)
@@ -53,19 +55,21 @@ export default function SignInScreen() {
       })
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {
-          Alert.alert(`Email já cadastrado`);
+          Alert.alert('Email já cadastrado');
+          return;
         }
 
         if (error.code === 'auth/invalid-email') {
-          Alert.alert(`Email inválido`);
+          Alert.alert('Email inválido');
+          return;
         }
 
-        // Alert.alert(
-        //   `Não foi possível criar sua conta o login: ${error.message}`,
-        // );
+        Alert.alert(
+          `Não foi possível efetuar o cadastro. Revise suas credenciais e tente novamente.`,
+        );
       })
       .finally(() => {
-        setIsLoading(false);
+        setIsSignUpLoading(false);
       });
   };
 
@@ -102,23 +106,24 @@ export default function SignInScreen() {
             secureTextEntry
           />
 
-          {isLoading ? (
-            <ActivityIndicator color={theme.colors.main} size="large" />
-          ) : (
-            <View style={{ marginTop: 16 }}>
-              <Button
-                title="Entrar"
-                onPress={signIn}
-                disabled={email === '' || password === ''}
-              />
+          <View style={{ marginTop: 32 }}>
+            <Button
+              variant="secondary"
+              title="Entrar"
+              onPress={signIn}
+              disabled={email === '' || password === ''}
+              isLoading={isSignInLoading}
+            />
 
-              <Button
-                title="Criar conta"
-                onPress={signUp}
-                disabled={email === '' || password === ''}
-              />
-            </View>
-          )}
+            <Button
+              style={{ marginTop: 8 }}
+              variant="outline"
+              title="Criar conta"
+              onPress={signUp}
+              disabled={email === '' || password === ''}
+              isLoading={isSignUpLoading}
+            />
+          </View>
         </Content>
       </Container>
     </KeyboardAvoidingView>

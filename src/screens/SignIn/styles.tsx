@@ -37,7 +37,7 @@ export const HeaderTitle = styled.Text`
 
 export const Content = styled.View`
   flex: 1;
-  margin: 64px 16px 0;
+  margin: 48px 16px 0;
 `;
 
 export const Title = styled.Text`
