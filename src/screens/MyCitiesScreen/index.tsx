@@ -80,8 +80,9 @@ type MyCitiesScreenRoute = RouteProp<RootStackParamList, 'MyCitiesScreen'>;
 
 export function MyCitiesScreen() {
   const { navigate, setParams } = useNavigation();
-
   const { params } = useRoute<MyCitiesScreenRoute>();
+  const { user } = useAuth();
+
   const isFromCityScreen = params?.isFromCityScreen;
 
   const insets = useSafeAreaInsets();
@@ -165,10 +166,12 @@ export function MyCitiesScreen() {
     }
   };
 
-  const fetchCitiesWeatherData = async () => {
+  const fetchCitiesWeatherData = useCallback(async () => {
     setIsLoading(true);
 
-    const querySnapshot = await db.cities.get();
+    const querySnapshot = await db.cities
+      .where('userId', '==', user?.uid)
+      .get();
 
     const storedCities = querySnapshot.docs.map(doc => {
       return {
@@ -244,8 +247,10 @@ export function MyCitiesScreen() {
       } finally {
         setIsLoading(false);
       }
+    } else {
+      setIsLoading(false);
     }
-  };
+  }, [user?.uid]);
 
   useFocusEffect(
     useCallback(() => {
@@ -258,7 +263,7 @@ export function MyCitiesScreen() {
           setParams({ isFromCityScreen: false });
         }
       };
-    }, [isFromCityScreen, setParams]),
+    }, [fetchCitiesWeatherData, isFromCityScreen, setParams]),
   );
 
   return (

@@ -114,7 +114,9 @@ export function SearchScreen() {
   useEffect(() => {
     async function checkIfIsStoredCity() {
       if (cityInfo?.name) {
-        const querySnapshot = await db.cities.get();
+        const querySnapshot = await db.cities
+          .where('userId', '==', user?.uid)
+          .get();
 
         const storedCities = querySnapshot.docs.map(doc => {
           return {
@@ -136,7 +138,7 @@ export function SearchScreen() {
     }
 
     checkIfIsStoredCity();
-  }, [cityInfo?.name]);
+  }, [cityInfo?.name, user?.uid]);
 
   useEffect(() => {
     if (cityName === '') {
