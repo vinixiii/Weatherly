@@ -7,6 +7,11 @@ interface ContainerProps {
   isOutline: boolean;
 }
 
+interface TitleProps {
+  color: string;
+  disabled?: boolean;
+}
+
 export const Container = styled.TouchableOpacity.attrs({
   activeOpacity: Number(0.7),
 })<ContainerProps>`
@@ -21,10 +26,24 @@ export const Container = styled.TouchableOpacity.attrs({
       border-width: 1px;
       border-color: ${({ theme }) => theme.colors.line};
     `}
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      border-width: unset;
+      border-color: unset;
+      background-color: ${({ theme }) => theme.colors.gray100};
+    `}
 `;
 
-export const Title = styled.Text<{ color: string }>`
+export const Title = styled.Text<TitleProps>`
   font-family: ${({ theme }) => theme.fonts.primary500};
   font-size: ${RFValue(14)}px;
   color: ${({ color }) => color};
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      color: ${({ theme }) => theme.colors.gray300};
+    `}
 `;

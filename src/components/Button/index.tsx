@@ -10,7 +10,12 @@ interface IButton extends TouchableOpacityProps {
   variant?: 'primary' | 'secondary' | 'outline';
 }
 
-export function Button({ title, variant = 'primary', ...rest }: IButton) {
+export function Button({
+  title,
+  variant = 'primary',
+  disabled,
+  ...rest
+}: IButton) {
   const theme = useTheme();
 
   const colors = useMemo(() => {
@@ -24,13 +29,13 @@ export function Button({ title, variant = 'primary', ...rest }: IButton) {
       case 'secondary':
         return {
           background: theme.colors.main,
-          text: theme.colors.text,
+          text: theme.colors.primaryBackground,
         };
 
       case 'outline':
         return {
           background: theme.colors.primaryBackground,
-          text: theme.colors.text,
+          text: theme.colors.title,
         };
 
       default:
@@ -43,7 +48,7 @@ export function Button({ title, variant = 'primary', ...rest }: IButton) {
     theme.colors.border,
     theme.colors.main,
     theme.colors.primaryBackground,
-    theme.colors.text,
+    theme.colors.title,
     variant,
   ]);
 
@@ -51,9 +56,12 @@ export function Button({ title, variant = 'primary', ...rest }: IButton) {
     <Container
       backgroundColor={colors.background}
       isOutline={variant === 'outline'}
+      disabled={disabled}
       {...rest}
     >
-      <Title color={colors.text}>{title}</Title>
+      <Title color={colors.text} disabled={disabled}>
+        {title}
+      </Title>
     </Container>
   );
 }
