@@ -9,6 +9,7 @@ interface ContainerProps {
 
 interface TitleProps {
   color: string;
+  opacity: number;
   disabled?: boolean;
 }
 
@@ -36,10 +37,18 @@ export const Container = styled.TouchableOpacity.attrs({
     `}
 `;
 
+export const Loading = styled.ActivityIndicator.attrs({
+  size: 'small',
+})`
+  align-self: center;
+  position: absolute;
+`;
+
 export const Title = styled.Text<TitleProps>`
   font-family: ${({ theme }) => theme.fonts.primary500};
   font-size: ${RFValue(14)}px;
   color: ${({ color }) => color};
+  opacity: ${({ opacity }) => opacity};
 
   ${({ disabled }) =>
     disabled &&

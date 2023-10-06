@@ -3,16 +3,18 @@ import { TouchableOpacityProps } from 'react-native';
 
 import { useTheme } from 'styled-components';
 
-import { Container, Title } from './styles';
+import { Container, Loading, Title } from './styles';
 
 interface IButton extends TouchableOpacityProps {
   title: string;
   variant?: 'primary' | 'secondary' | 'outline';
+  isLoading?: boolean;
 }
 
 export function Button({
   title,
   variant = 'primary',
+  isLoading,
   disabled,
   ...rest
 }: IButton) {
@@ -59,7 +61,13 @@ export function Button({
       disabled={disabled}
       {...rest}
     >
-      <Title color={colors.text} disabled={disabled}>
+      {isLoading && <Loading color={colors.text} />}
+
+      <Title
+        opacity={isLoading ? 0 : 1}
+        color={colors.text}
+        disabled={disabled}
+      >
         {title}
       </Title>
     </Container>
