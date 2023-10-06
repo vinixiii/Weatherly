@@ -1,11 +1,10 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Alert, Button } from 'react-native';
+import { Alert } from 'react-native';
 import Config from 'react-native-config';
 import { Layout } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import analytics from '@react-native-firebase/analytics';
-import crashlytics from '@react-native-firebase/crashlytics';
 import {
   RouteProp,
   useFocusEffect,
@@ -14,6 +13,7 @@ import {
 } from '@react-navigation/native';
 import { AnimatePresence } from 'moti';
 
+import { Button } from '~/components/Button';
 import { CityWeatherCard } from '~/components/CityWeatherCard';
 import { Loading } from '~/components/Loading';
 import Presence from '~/components/Presence';
@@ -36,8 +36,7 @@ import {
   InitialMessage,
   MessageSubtitle,
   MessageTitle,
-  Subtitle,
-  Title,
+  HeaderTitle,
 } from './styles';
 
 const { WEATHER_API_KEY } = Config;
@@ -266,13 +265,11 @@ export function MyCitiesScreen() {
     <Container>
       <Header insetsTop={insets.top}>
         <HeaderContent>
-          <Title>Weatherly</Title>
-          <Subtitle>Minhas cidades</Subtitle>
+          <HeaderTitle>Weatherly</HeaderTitle>
+
+          <Button variant="outline" title="Sair" onPress={signOut} />
         </HeaderContent>
       </Header>
-
-      <Button onPress={() => crashlytics().crash()} title="Test Crash" />
-      <Button onPress={signOut} title="Sign Out" />
 
       {isLoading ? (
         <Loading />

@@ -25,16 +25,10 @@ export const HeaderContent = styled.View`
   height: ${RFValue(48)}px;
 `;
 
-export const Title = styled.Text`
+export const HeaderTitle = styled.Text`
   font-family: ${({ theme }) => theme.fonts.primary600};
   font-size: ${RFValue(24)}px;
   color: ${({ theme }) => theme.colors.main};
-`;
-
-export const Subtitle = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.primary400};
-  font-size: ${RFValue(15)}px;
-  color: ${({ theme }) => theme.colors.text};
 `;
 
 export const Content = styled.ScrollView.attrs({
