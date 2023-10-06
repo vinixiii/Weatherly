@@ -4,7 +4,6 @@ import Config from 'react-native-config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AnimatePresence, MotiView, useAnimationState } from 'moti';
 import { useTheme } from 'styled-components';
 
@@ -12,7 +11,11 @@ import { CityCard } from '~/components/CityCard';
 import { Loading } from '~/components/Loading';
 import Presence from '~/components/Presence';
 
+import useAuth from '~/hooks/useAuth';
+
 import { CityInfoDTO } from '~/dtos/CityInfoDTO';
+
+import db from '~/services/db';
 
 import SearchImage from './components/SearchImage';
 import {
@@ -33,8 +36,8 @@ const { WEATHER_API_KEY } = Config;
 
 export function SearchScreen() {
   const theme = useTheme();
-
   const insets = useSafeAreaInsets();
+  const { user } = useAuth();
 
   const [isLoading, setIsLoading] = useState(false);
   const [cityIsAlreadyStored, setCityIsAlreadyStored] = useState(false);
@@ -88,15 +91,18 @@ export function SearchScreen() {
   };
 
   async function handleAddNewCity() {
-    const dataStorageKey = `@weatherly:cities`;
-
     try {
-      const data = await AsyncStorage.getItem(dataStorageKey);
-      const currentData = data ? JSON.parse(data) : [];
-
-      const cities = [...currentData, cityInfo];
-
-      await AsyncStorage.setItem(dataStorageKey, JSON.stringify(cities));
+      if (cityInfo?.id && user?.uid) {
+        db.cities.add({
+          id: cityInfo.id,
+          name: cityInfo.name,
+          country: cityInfo.country,
+          lon: cityInfo.lon,
+          lat: cityInfo.lat,
+          favorite: false,
+          userId: user.uid,
+        });
+      }
 
       setCityIsAlreadyStored(true);
     } catch (error) {
@@ -107,21 +113,26 @@ export function SearchScreen() {
 
   useEffect(() => {
     async function checkIfIsStoredCity() {
-      const dataStorageKey = `@weatherly:cities`;
-      const data = await AsyncStorage.getItem(dataStorageKey);
-      const transactions = data ? JSON.parse(data) : [];
+      if (cityInfo?.name) {
+        const querySnapshot = await db.cities.get();
 
-      const storedCities = transactions.filter(
-        (item: CityInfoDTO) => item.name === cityInfo?.name,
-      );
+        const storedCities = querySnapshot.docs.map(doc => {
+          return {
+            docId: doc.id,
+            ...(doc.data() as CityInfoDTO),
+          };
+        });
 
-      if (storedCities.length > 0) {
-        setCityIsAlreadyStored(true);
-      } else {
-        setCityIsAlreadyStored(false);
+        const storedCity = storedCities.find(
+          city => city.name === cityInfo.name,
+        );
+
+        if (storedCity) {
+          setCityIsAlreadyStored(true);
+        } else {
+          setCityIsAlreadyStored(false);
+        }
       }
-
-      // await AsyncStorage.removeItem(dataStorageKey);
     }
 
     checkIfIsStoredCity();

@@ -4,7 +4,6 @@ import Config from 'react-native-config';
 import { Layout } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import analytics from '@react-native-firebase/analytics';
 import crashlytics from '@react-native-firebase/crashlytics';
 import {
@@ -27,6 +26,7 @@ import { CityWeatherInfoDTO } from '~/dtos/CityWeatherInfoDTO';
 import CityIllustration from '~/assets/city.svg';
 
 import { RootStackParamList } from '~/@types/navigation';
+import db from '~/services/db';
 
 import {
   Container,
@@ -114,54 +114,51 @@ export function MyCitiesScreen() {
   };
 
   const handleDelete = async (name: string) => {
-    // Delete from myCities
     const cities = myCities.map(city => ({ ...city }));
-    const updatedCities = cities.filter(city => city.name !== name);
-    setMyCities(updatedCities);
 
-    // Delete from storage
-    const dataStorageKey = `@weatherly:cities`;
-    const data = await AsyncStorage.getItem(dataStorageKey);
-    const storedData = JSON.parse(data!);
+    const cityToDelete = cities.find(city => city.name === name);
 
-    const storedCitiesUpdated = storedData.filter(
-      (city: CityInfoDTO) => city.name !== name,
-    );
+    try {
+      if (!cityToDelete) return;
 
-    await AsyncStorage.setItem(
-      dataStorageKey,
-      JSON.stringify(storedCitiesUpdated),
-    );
+      // Delete from storage
+      await db.cities.doc(cityToDelete.docId).delete();
+
+      // Delete from state
+      const updatedCities = cities.filter(city => city.name !== name);
+
+      setMyCities(updatedCities);
+    } catch (error) {
+      console.error(error);
+
+      Alert.alert('Oops!', 'Não foi possível deletar essa cidade.');
+    }
   };
 
   const handleFavorite = async (name: string) => {
+    const cities = myCities.map(city => ({ ...city }));
+
+    const cityToFavorite = cities.find(city => city.name === name);
+
     try {
-      // Update myCities
-      const updatedCities = myCities.map(city => ({ ...city }));
-      const foundCity = updatedCities.find(city => city.name === name);
+      if (!cityToFavorite) return;
 
-      if (!foundCity) return;
+      cityToFavorite.favorite = !cityToFavorite.favorite;
 
-      foundCity.favorite = !foundCity.favorite;
-      setMyCities(updatedCities);
+      // Favorite storage city
+      await db.cities.doc(cityToFavorite.docId).update({
+        favorite: cityToFavorite.favorite,
+      });
 
-      // Update storage
-      const dataStorageKey = `@weatherly:cities`;
-      const data = await AsyncStorage.getItem(dataStorageKey);
-      const storedData = JSON.parse(data!);
-
-      const foundStoredCity = storedData.find(
-        (city: CityInfoDTO) => city.name === name,
-      );
-      foundStoredCity.favorite = !foundStoredCity.favorite;
-
-      await AsyncStorage.setItem(dataStorageKey, JSON.stringify(storedData));
+      // Favorite state city
+      setMyCities(cities);
 
       analytics().logEvent('city_weather_card_favorited', {
         cityName: name,
       });
     } catch (error) {
       console.error(error);
+
       Alert.alert(
         'Oops!',
         'Não foi possível adicionar esta cidade aos favoritos.',
@@ -170,20 +167,24 @@ export function MyCitiesScreen() {
   };
 
   const fetchCitiesWeatherData = async () => {
-    const dataStorageKey = `@weatherly:cities`;
-    const data = await AsyncStorage.getItem(dataStorageKey);
-    const currentData = data ? JSON.parse(data) : [];
+    setIsLoading(true);
 
-    if (currentData.length > 0) {
-      const cities: any = [];
+    const querySnapshot = await db.cities.get();
+
+    const storedCities = querySnapshot.docs.map(doc => {
+      return {
+        docId: doc.id,
+        ...(doc.data() as CityInfoDTO),
+      };
+    });
+
+    if (storedCities.length) {
+      const cities: CityWeatherInfoDTO[] = [];
 
       try {
-        setIsLoading(true);
-
         // eslint-disable-next-line no-restricted-syntax
-        for (const city of currentData) {
-          const { lat } = city;
-          const { lon } = city;
+        for (const city of storedCities) {
+          const { docId, lat, lon } = city;
 
           const exclude = 'hourly,minutely';
           // eslint-disable-next-line no-await-in-loop
@@ -233,12 +234,13 @@ export function MyCitiesScreen() {
             favorite: city.favorite,
           };
 
-          cities.push(formattedData);
+          cities.push({ docId, ...formattedData });
         }
 
         setMyCities(cities);
       } catch (error) {
         console.error(error);
+
         Alert.alert('Oops!', 'Não foi possível listar as cidades.');
       } finally {
         setIsLoading(false);
@@ -254,7 +256,7 @@ export function MyCitiesScreen() {
 
       return () => {
         if (isFromCityScreen) {
-          setParams({ isFromCityScreen: false } as never);
+          setParams({ isFromCityScreen: false });
         }
       };
     }, [isFromCityScreen, setParams]),
