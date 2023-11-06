@@ -5,7 +5,11 @@
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
+    "android-dev": "react-native run-android --variant=stagingDebug --appIdSuffix=staging",
+    "android-prod": "expo run:android --variant=productionDebug",
     "ios": "expo run:ios",
+    "ios-dev": "expo run:ios --configuration=Debug",
+    "ios-prod": "react-native run-ios --mode=Debug",
     "web": "expo start --web"
   },
   "dependencies": {

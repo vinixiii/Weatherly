@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { Alert, StatusBar } from 'react-native';
+import Config from 'react-native-config';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import {
-  useFonts,
   Archivo_400Regular,
   Archivo_500Medium,
   Archivo_600SemiBold,
+  useFonts,
 } from '@expo-google-fonts/archivo';
 import messaging from '@react-native-firebase/messaging';
 import remoteConfig from '@react-native-firebase/remote-config';
@@ -59,6 +60,10 @@ export default function App() {
       });
     }
   };
+
+  useEffect(() => {
+    console.log(Config.ENV_NAME);
+  }, []);
 
   useEffect(() => {
     requestUserPermission();

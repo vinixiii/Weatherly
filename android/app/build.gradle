@@ -4,6 +4,11 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'com.google.firebase.crashlytics'
 
+project.ext.envConfigFiles = [
+    staging: ".env",
+    production: ".env.prod",
+]
+
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
@@ -86,6 +91,8 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
+    flavorDimensions "default"
+
     namespace 'com.weatherly'
     defaultConfig {
         applicationId 'com.weatherly'
@@ -116,6 +123,11 @@ android {
             shrinkResources (findProperty('android.enableShrinkResourcesInReleaseBuilds')?.toBoolean() ?: false)
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+    productFlavors {
+        staging {
+            applicationIdSuffix '.staging'
         }
     }
 }
